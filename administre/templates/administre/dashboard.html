@@ -1,0 +1,99 @@
+{% extends 'administre/layout/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'warning' %}
+                        <div class="alert alert-warning" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    <div class="row">
+        <h3 style="margin-top: 2%;">Mes Rendez-vous</h3>
+        <div class=" col-md-12" style="margin-top: 3%; margin-bottom: 4%;">
+            {% if rdvs|length_is:"0" %}
+              <p>Désolé Aucun Rendez-vous disponible pour vous</p>
+            {% else %}
+            <div class="row">
+                <div class="col">
+                  <div class="card bg-default shadow">
+                    <div class="card-header bg-transparent border-0">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <h3 class="text-white mb-0">Liste de vos Rendez-vous</h3>
+                            </div>
+                            <div class="col-md-4 offset-md-3">
+                                <input class="form-control" type="text" id="myInput" onkeyup="myFunction()" placeholder="Recherche..."  style="margin-top: 7px;"> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table align-items-center table-dark table-flush" id="myTable">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th scope="col" class="sort" data-sort="name">Objets</th>
+                            <th scope="col" class="sort" data-sort="budget">Nom</th>
+                            <th scope="col" class="sort" data-sort="status">Date et Heure</th>
+                            <th scope="col">NBR Personnes</th>
+                            <th scope="col">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody class="list">
+                        {% for rdv in rdvs %}
+                          <tr>
+                            <td scope="row">
+                                {{ rdv.service.nom }}
+                            </td>
+                            <td class="budget">
+                                {{ rdv.client.nom }}  {{ rdv.client.prenom }}
+                            </td>
+                            <td>
+                              <span class="badge badge-dot mr-4">
+                                {{ rdv.date_r }}  {{ rdv.heure_r }}
+                              </span>
+                            </td>
+                            <td>
+                                {{ rdv.nombre_personne }}
+                            </td>
+                            <td class="text-right">
+                              <div class="dropdown">
+                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  <i class="fas fa-ellipsis-v"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                  <a class="dropdown-item" href="{% url 'administre:edit_rdv' id=rdv.id %}">Modifier</a>
+                                  <a class="dropdown-item" href="{% url 'administre:show_rdv' id=rdv.id %}">Details</a>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+    
+
+{% endblock %}

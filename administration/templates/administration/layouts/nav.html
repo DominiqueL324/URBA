@@ -1,0 +1,67 @@
+{% load static %}
+{% load user_tags %}
+<header class="header">
+    <div class="bars-section">
+     <span class="lg-screen">
+         <i class="far fa-arrow-alt-circle-left" id="toggleBtn" style="cursor: pointer;"></i>
+     </span>
+    
+     <span class="md-screen">
+         <i class="far fa-arrow-alt-circle-left md-sreen" id="toggleSmallMenu" style="cursor: pointer;"></i>
+     </span>
+    </div>
+
+    <div class="profile">
+      <div class="dropdown" id="dropdown">
+          <div class="dropdown-trigger" style="overflow: hidden;">
+           <button class="button button-custom-style" onclick="toggleDropdown()" aria-haspopup="true" aria-controls="dropdown-menu">
+            <span><small style="font: small-caption;">Bienvenue</small> {{ request.user.first_name }}  {{ request.user.last_name }}</span>
+            <span class="icon is-small">
+              <i class="fas fa-angle-down" aria-hidden="true"></i>
+            </span>
+          </button>
+              
+          </div> 
+          <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+              {% if request.user|has_group:"Administrateur" %}
+                <a href="{% url 'administration:administrateur_get_edit'  id=request.user.administrateur.id %}" class="dropdown-item">
+                  <p>Mon Profil</p>
+                </a>
+              {% elif request.user|has_group:"Adjoint" %}
+                <a href="{% url 'administration:adjoint_get_edit'  id=request.user.adjoint.id %}" class="dropdown-item">
+                  Mon Profil
+                </a>
+              {% elif request.user|has_group:"Superviseur" %}
+                <a href="{% url 'administration:adjoint_get_edit'  id=request.user.adjoint.id %}" class="dropdown-item">
+                  Mon Profil
+                </a>
+              {% else%}
+                <a href="{% url 'administration:responsable_get_edit'  id=request.user.responsable.id %}" class="dropdown-item">
+                    Mon Profil
+                </a>
+              {% endif %}
+              
+              {% if request.user|has_group:"Administrateur" %}
+                <!--<a class="dropdown-item" href="https://urbardv.saint-medard-en-jalles.fr/admin/">
+                  Paramètres
+                </a>-->
+              {% endif %}
+              
+              
+              <hr class="dropdown-divider">
+              <a href="{% url 'administration:logout' %}" class="dropdown-item">
+                <Datag>Déconnexion</Datag>
+              </a>
+            </div>
+          </div>
+        </div>
+  </div>
+</header>
+<script>
+  let dropdown = document.querySelector('.dropdown');
+        dropdown.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dropdown.classList.toggle('is-active');
+        });
+</script>

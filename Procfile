@@ -1,0 +1,1 @@
+web: gunicorn urba_project.wsgi

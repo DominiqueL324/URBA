@@ -1,0 +1,647 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Site made with Mobirise Website Builder v5.2.0, https://mobirise.com -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Mobirise v5.2.0, mobirise.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <link rel="shortcut icon" href="{% static 'images/logo-96x50.png' %}" type="image/x-icon">
+    <meta name="description" content="">
+
+
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/tether.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-reboot.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style_dropdown1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style_theme1.css' %}">
+    <link href="{% static 'rdv/css/evo-calendar.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/evo-calendar.midnight-blue.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/evo-calendar.orange-coral.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/evo-calendar.royal-navy.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/intlTelInput.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/main.css' %}" rel='stylesheet' />
+    <link rel="preload" as="style" href="{% static 'css/mbr-additional.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mbr-additional.css' %}" type="text/css">
+
+
+
+
+</head>
+
+<body>
+
+    <section class="menu menu2 cid-spzCWt6TcI" once="menu" id="menu2-6">
+
+        <nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
+            <div class="container-fluid">
+                <div class="navbar-brand">
+                    <span class="navbar-logo">
+                        <a href="#header13-7">
+                            <img src="{% static 'images/logo-96x50.png' %}" alt="Mobirise" style="height: 3.6rem;">
+                        </a>
+                    </span>
+                    <span class="navbar-caption-wrap"><a class="navbar-caption text-black display-7"
+                            href="#">URBA</a></span>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav nav-dropdown" data-app-modern-menu="true">
+                        <li class="nav-item"><a class="nav-link link text-black text-primary display-4"
+                                href="{% url 'administre:login' %}">Mes Rendez-Vous</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link link text-black text-primary display-4"
+                                href="#form2-c">Nouveau Rendez-Vous</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </section>
+
+    <section class="header13 cid-spzD1yQ6oB mbr-fullscreen" id="header13-7"
+        style="background-image: url({% static 'images/bg1-870x576.jpg' %})">
+
+
+
+        <div class="mbr-overlay" style="opacity: 0.2; background-color: rgb(255, 255, 255);"></div>
+
+        <div class="align-center container-fluid">
+            <div class="row justify-content-center ">
+                <div class="col-12 col-lg-12">
+                    <h1 class="mbr-section-title mbr-fonts-style mb-3 display-2"><strong>SAINT MEDARD EN JALLES</strong>
+                    </h1>
+                    <h2 class="mbr-section-subtitle mbr-fonts-style mb-3 display-2">Service Urbanisme&nbsp;</h2>
+                    <p class="mbr-text mbr-fonts-style mb-3 display-7">.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="form2 cid-spzIlFq936 mbr-parallax-background" id="form2-c"
+        style="background-image: url({% static 'images/img-1-1200x600.jpg' %});">
+
+
+
+        <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(255, 255, 255);"></div>
+        <div class="align-left container">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                    <div class="alert alert-success" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+                    {% if message.tags == 'warning' %}
+                    <div class="alert alert-warning" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="col-md-12">
+                    {% if errors %}
+                    <div>
+                        {% for key, error in errors %}
+                        {% autoescape off %}
+                        <p style="color: red;">{{ error }}</p>
+                        {% endautoescape %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row justify-content-center">
+
+
+                <div class=" card col-md-12" style="background-color: rgb(255, 255, 255);">
+
+                    <form class="monform" id="monform" method="POST" action="{% url 'rdv:add' %}"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="card-header">Prendre un Rendez-vous <div style="color: red;" id="dateError">
+                                    </div>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="nav-item">
+                                    <a href="#responsable" id="service" class="nav-link active "
+                                        data-toggle="tab">Objets </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#rdv" id="rdvs" class="nav-link  " data-toggle="tab">Jour</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#horaires" id="rdvs" class="nav-link  " data-toggle="tab">Horaire</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#personnel" id="personnels" class=" nav-link  "
+                                        data-toggle="tab">Informations Personnelles et Adresse(s) de travaux </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" style="padding-top: 2%;">
+
+                                <div class="tab-pane fade show active" style="height: auto;" id="responsable">
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <label for="">Objets</label>
+                                            {{form.service}}
+                                        </div>
+                                    </div>
+                                    <div id="urba" style="display: none;">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for=""><span style="color: red;">*</span>Pour votre question ou votre projet avez-vous déjà pris
+                                                    contact avec le Service Urbanisme ?</label>
+                                                {% for radio in form.urbanisme %}
+                                                <div class="form-check col-md-3">
+                                                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                                        <span class="radio"></span> {{ radio.tag }} {{radio.choice_label }} </span>
+                                                    </label>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+
+                                            <div class="col-md-6" id="agentL" style="display: none;">
+                                                <div class="form-group col-md-12">
+                                                    <label for="">Agent</label>
+                                                    <input class="form-control" name="agent" id="agentS">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary" id="next1" type="button">Suivant</button>
+                                        </div>
+
+                                        <div class="col-md-10">
+                                            <div id="warning" class="alert alert-danger fade show"
+                                                style="display: none;" role="alert">
+                                                <strong>Attention</strong> Tous les champs sont obligatoires
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="tab-pane fade" id="rdv">
+                                    
+                                    <div class="form-row">
+                                        <div class="col-md-8">
+                                            <div id='calendar1'></div>
+                                            <!--<div id="evoCalendar" style="height: 550px;background-color: white;"></div>!-->
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="inputDate">Date</label>
+                                                    {{ form.date }}
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="inputNombre">Nombre de Personne</label>
+                                                    {{ form.nombre_person }}
+                                                </div>
+                                            </div>
+                                            <div class=" form-row">
+                                                <div class=" form-group col-md-5">
+                                                    <button class="btn btn-primary" id="prev1"
+                                                        type="button">Précédent</button>
+                                                </div>
+                                                <div class="form-group col-md-5">
+                                                    <button type="button" id="next2"
+                                                        class="btn btn-primary">Suivant</button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div id="warning2" style="display: none;color: red;" role="alert">
+                                                        <small>Attention!!! à cette date aucun Rendez-vous n'est
+                                                            possible pour ce service</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div id="warning1" style="display: none;color: red;" role="alert">
+                                                        <small>Attention Tout les champs sont obligatoires</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div id="warning3" style="display: none;color: red;" role="alert">
+                                                        <small>Attention Aucun responsable pour ce service</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div id="warning4" style="display: none;color: red;" role="alert">
+                                                        <small>Attention ce service n'est pas ouvert les
+                                                            weekends</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="dominique fade" id="horaires">
+
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div id='calendar'></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for=""> <span style="color: red;">*</span> Souhaitez vous un
+                                                        Rendez-vous Téléphonique?</label>
+                                                    {% for radio in form.phone %}
+                                                    <div class="form-check col-md-6">
+                                                        <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                                            <span class="radio"></span> {{ radio.tag }} {{radio.choice_label }} </span>
+                                                        </label>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12" id="creneau">
+                                                   
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="inputNombre">Heure</label>
+                                                    {{ form.heure }}
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="inputNombre">Heure de Fin</label>
+                                                    {{ form.heureF }}
+                                                </div>
+                                            </div>
+                                            <div class=" form-row">
+                                                <div class=" form-group col-md-6">
+                                                    <button class="btn btn-primary" id="prev3"
+                                                        type="button">Précédent</button>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <button type="button" id="next3"
+                                                        class="btn btn-primary">Suivant</button>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-row">
+                                                    <div class="col-md-12">
+                                                        <div id="warning5" style="display: none;">
+                                                            <p style="color: red;"><strong>Attention</strong> Pas de
+                                                                Rendez-Vous disponible durant la pause</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div id="warning6" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention </strong> Vous ne
+                                                            pouvez Prendre un RDV physique à cette heure il y a déjà un
+                                                            RDV en cours à cette heure ce Jour
+                                                            veuillez consulter le calendrier et selectionner un créneau
+                                                            vide</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div id="warning7" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention</strong> Selectionner
+                                                            un type de Rendez-Vous pour continuer</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div id="warning8" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention</strong> Tous les
+                                                            champs sont obligatoires</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div id="warning9" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention </strong> Vous ne
+                                                            pouvez Prendre un RDV Téléphonique à cette heure il y a déjà
+                                                            un RDV en cours à cette heure ce Jour
+                                                            veuillez consulter le calendrier et selectionner un créneau
+                                                            vide</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div id="warning14" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention </strong> L'agent selectionné 
+                                                        est déjà occupé  durant ce créneau veuillez choisir un autre créneau
+                                                        ou changez d'agent</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div id="warning10" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention</strong> Pas de
+                                                            Rendez-Vous avant 08h:00 et après 17h:00</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div id="warning11" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention</strong> Pas de
+                                                            chevauchement entre RDV physique et Téléphonique durant un
+                                                            jour spécifique</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div id="warning12" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention</strong> Votre créneau
+                                                            n'est pas dans la tranche Horaire ouvrable de ce jour</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div id="warning13" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention</strong> Tous les champs sont obligatoires </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div id="warning17" style="display: none;">
+                                                        <p style="color: red;"><strong>Attention</strong> Plus de Rendez-vous possible sur ce créneau car l'agent disponible est déjà occupé ou n'est pas en service à cette date</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade " id="personnel">
+                                    <input type="hidden" name="" id="tmpsService">
+                                    <h4>Informations Personelles</h4>
+                                    <hr>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="inputNom"><span style="color: red;">*</span> Nom de
+                                                Famille</label>
+                                            <div class="input-group has-validation">
+                                                {{ form.nom }}
+                                                <div class="invalid-feedback">
+                                                    Le nom est obligatoire
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="inputPrenom"><span style="color: red;">*</span>
+                                                Prénom(s)</label>
+                                            <div class="input-group has-validation">
+                                                {{ form.prenom }}
+                                                <div class="invalid-feedback">
+                                                    Le Prénom est obligatoire
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4 ">
+                                            <label for="telephone"><span style="color: red;">*</span> Tel</label>
+                                            <br>
+                                            <div class="input-group has-validation">
+                                                {{ form.tel_number }}
+                                                <div class="invalid-feedback" id="erreurPhone">
+                                                    Le Numéro de téléphone doit commencé par 0 et avoir 10 chiffres
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+
+                                        <div class="form-group col-md-4">
+                                            <label for="inputEmail"><span style="color: red;">*</span> Email</label>
+                                            <div class="input-group has-validation">
+                                                {{ form.email }}
+                                                <div class="invalid-feedback">
+                                                    L'Email est obligatoire
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="inputAdress"><span style="color: red;">*</span>Adresse
+                                                <small><b>(de Saint-medard-en-jalles)</b> </small></label>
+                                            <div class="input-group has-validation">
+                                                {{ form.adress }}
+                                                <div class="invalid-feedback">
+                                                    L'adresse est obligatoire
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="inputAdress">Souhaitez vous ajouter des fichiers (2 Mo)</label>
+                                            {{ form.fichier }}
+                                        </div>
+
+                                    </div>
+                                    <h4>Adresse(s) de Travaux</h4>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-6 col-sm-6">
+                                            <label for="jour">Selectionnez une adresse des Travaux</label>
+                                            <select class="form-control form-select col-md-12" id="adresseT">
+                                               
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-6 col-lg-6 col-sm-6">
+                                            <label for="inputAdresseTravaux"><span style="color: red;">*</span> Nouvelle adresse(s) de Travaux</label>
+                                            <div class="input-group has-validation">
+                                                {{ form.adresseTravaux }}
+                                                <div class="invalid-feedback">
+                                                    L'Adresse(s) de travaux est obligatoire
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <hr>
+
+
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label for=""> <span style="color: red;">*</span> <a
+                                                    href="https://www.saint-medard-en-jalles.fr/page/politique-de-gestion-des-donnees-personnelles"
+                                                    target="_blank" rel="noopener noreferrer">Politique de
+                                                    confidentialité</a> </label>
+                                            <div class="form-check col-md-12">
+                                                <span>
+                                                    <input class="form-check-input" type="checkbox" value=""
+                                                        id="flexCheckDefault" required>
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        J'ai lu et j'accepte
+                                                    </label>
+                                                </span>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-row">
+                                        <script src='https://www.google.com/recaptcha/api.js'></script>
+                                        <div class=" form-group col-md-12 col-sm-12 col-12">
+                                            <div class="g-recaptcha"
+                                                data-sitekey="6LeLdCgaAAAAABZPV_w-_bWBzACxYhSBZ5rkmWRe"
+                                                data-callback="correctCaptcha"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class=" form-row">
+                                        <div class=" col-12 col-sm-2 col-md-2">
+                                            <button class="btn btn-primary" id="prev2" type="button">Précédent</button>
+                                        </div>
+                                        <div class="col-md-2 col-12 col-sm-2">
+                                            <button type="submit" id="reserver" class="btn btn-success">Terminer</button>
+                                        </div>
+                                        <div class="col-md-2 col-12 col-sm-2">
+                                            <button class="btn btn-danger" type="reset">Annuler</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <section class="footer7 cid-sq1rqKTRBt" once="footers" id="footer7-d">
+
+
+
+
+
+        <div class="container">
+            <div class="media-container-row align-center mbr-white">
+                <div class="col-12">
+                    <p class="mbr-text mb-0 mbr-fonts-style display-7">
+                        &copy; Copyright {% now 'Y' %} &middot; Saint Médard en Jalles &middot; All rights reserved
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="{% static 'rdv/js/evo-calendar.js' %}"></script>
+        <script src="{% static 'rdv/js/ownscript.js' %}"></script>
+        <script src="{% static 'rdv/js/rdv_form_event.js' %}"></script>
+        <script src="{% static 'rdv/js/intlTelInput.min.js' %}"></script>
+        <script src="{% static 'js/popper.min.js' %}"></script>
+        <script src="{% static 'js/tether.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/smooth-scroll.js' %}"></script>
+        <script src="{% static 'js/nav-dropdown.js' %}"></script>
+        <script src="{% static 'js/navbar-dropdown.js' %}"></script>
+        <script src="{% static 'js/jarallax.min.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'js/formoid.min.js' %}"></script>
+        <script src="{% static 'rdv/js/main.js' %}"></script>
+        <script src="{% static 'rdv/js/locales/fr.js' %}"></script>
+        <script>
+
+        </script>
+        <script>
+            url = "{% url 'rdv:get_creneau_ajax' %}" 
+            configCalendar(url)
+            document.getElementById('next2').onclick = function (e) {
+                url = "{% url 'disponibilites:event_get_for_rdv' %}"
+                Next2Click(url, e)
+            }
+            document.getElementById('next3').onclick = function (e) {
+                url = "{% url 'rdv:get_heure_ajax' %}"
+                Next3Click(url, e)
+            }
+
+        </script>
+        <script>
+            $('#id_urbanisme_0').on('click',function(e){
+                url = "{% url 'rdv:get_agent_ajax' %}"
+                getAgent(url)
+                $('#agentL').css('display','inline')
+            })
+            //gestion du captcha
+            $(".monform").each(function () {
+                $(this).find(':input[type="submit"]').prop('disabled', true);
+            });
+            function correctCaptcha() {
+                $(".monform").each(function () {
+                    $(this).find(':input[type="submit"]').prop('disabled', false);
+                });
+            }
+
+            //gestion des numéro de téléphone
+            var input = document.getElementById("telephone");
+            window.intlTelInput(input, ({
+                allowDropdown: true,
+                autoHideDialCode: true,
+                placeholderNumberType: "MOBILE",
+                preferredCountries: ["fr", "gb", "cm"],
+                separateDialCode: true,
+            }));
+
+        </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:rdv10@import.com
+DTSTAMP:20210622T100058
+ORGANIZER;CN=Bruno Dominique:MAILTO:brunoowona12@gmail.com
+DTSTART:20210621T100058
+DTEND:20210621T101058
+SUMMARY:Rendez-vous au service Extension (10 min) avec Service Urbanisme
+END:VEVENT
+END:VCALENDAR

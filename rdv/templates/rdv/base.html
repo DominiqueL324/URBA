@@ -1,0 +1,57 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{% static 'rdv/css/styles.css' %}">
+    <link href="{% static 'rdv/css/evo-calendar.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/evo-calendar.midnight-blue.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/evo-calendar.orange-coral.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/evo-calendar.royal-navy.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/intlTelInput.css' %}" rel="stylesheet" />
+    <link href="{% static 'rdv/css/main.css' %}" rel='stylesheet' />
+    {% block css %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+    {% block body %}{% endblock %}
+{% endblock %}
+{% block javascript %}
+    <script src="{% static 'rdv/js/evo-calendar.js' %}"></script>
+    <script src="{% static 'rdv/js/ownscript.js' %}"></script>
+    <script src="{% static 'rdv/js/intlTelInput.min.js' %}"></script>
+    <script src="{% static 'rdv/js/main.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth'
+            });
+            calendar.render();
+        });
+    </script>
+    
+<script>
+    //gestion du captcha
+    $(".monform").each(function() {
+        $(this).find(':input[type="submit"]').prop('disabled', true);
+    });
+    function correctCaptcha() {
+        $(".monform").each(function() {
+            $(this).find(':input[type="submit"]').prop('disabled', false);
+        });
+    }
+
+    //gestion des numéro de téléphone
+    var input = document.getElementById("telephone");
+    window.intlTelInput(input,({
+        allowDropdown:true,
+        autoHideDialCode:true,
+        placeholderNumberType:"MOBILE",
+        preferredCountries: ["fr","gb","cm" ],
+        separateDialCode:true,
+    }));
+
+ 
+ </script>
+ {% block js %}{% endblock %}
+{% endblock %}

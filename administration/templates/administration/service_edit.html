@@ -1,0 +1,112 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% block content %}
+<div class="tile is-child is-8">
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="notification is-success" role="alert">
+        {{message}}
+    </div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+    <div class="notification is-success" role="alert">
+        {{message}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    <h2 class="title" style="color: #112A46;font-weight: 700;">Modification d'un service</h2><br>
+    <div class="columns is-12">
+        <div class="column is-12">
+            <form method="POST" action="{% url 'administration:service_edit' id=service.id %}">
+                {% csrf_token %}
+                <div class="columns">
+                    <div class="column is-4">
+                        <button id="save" class="is-primary button is-small" type="submit"><i
+                                class="fas fa-edit"></i></button>
+                    </div>
+                    <div class="column is-4">
+                        <a id="delete3" class="is-danger button is-small"><i class="fa fa-trash"></i></a>
+                    </div>
+                    <div class="column is-4">
+                        <a href="{% url 'administration:service_dashboard' %}" class="is-danger button is-small">Annuler</a>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Nom du service</label>
+                    </div>
+                    <div class="column">
+                        {{form.nom}}
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Durée des rendez-vous (min)</label>
+                    </div>
+                    <div class="column">
+                        {{form.duree_rdv}}
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Choix de l'agent</label>
+                    </div>
+                    <div class="column is-4">
+                        <div class="select is-small">
+                            {{form.responsable}}
+                        </div>
+                    </div>
+                </div> <br>
+            </form>
+        </div>
+
+
+        <div class="column is-7">
+            <div class="box">
+                {% if responsables|length_is:"0" %}
+                <h2 class="sub-title" style="color: #051d38;font-weight: 700;">Aucun Responsable pour ce service</h2>
+                {% else %}
+                <div class="table-container" style="overflow: scroll;width: inherit; position: relative;">
+                    <table class="table" style="overflow: scroll;">
+                        <thead>
+                            <tr>
+                                <th><strong>RESPONSABLE(S)</strong>  </th>
+                                <th></th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for responsable in responsables %}
+                            <tr>
+                                <td>{{ responsable.responsable.user.first_name }} {{ responsable.responsable.user.last_name }}</td>
+                                {% if responsables|length_is:"1" %}
+                                
+                                {% else %}
+                                    <td><a href="{% url 'administration:service_delete_responsable' id=responsable.id %}" class="is-danger button is-small"><span><i class="fas fa-trash"></i></span></a>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $('#delete3').click(function () {
+        url = "{% url 'administration:service_delete' id=service.id %}"
+        if (confirm('Voulez vous vraiment supprimer ce Service??')) {
+            Delete(url,"service")
+        } else {
+        }
+    })
+</script>
+{% endblock %}

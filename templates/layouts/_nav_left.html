@@ -1,0 +1,133 @@
+
+    {% load static %}
+    {% load user_tags %}
+
+    <nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light "  style="background-color:rgb(110, 174, 247);" id="sidenav-main">
+        <div class="scrollbar-inner">
+          <!-- Brand -->
+          <div class="sidenav-header  align-items-center">
+            <a class="navbar-brand" href="javascript:void(0)">
+              <img src="{% static 'images/logo2.png' %}" class="navbar-brand-img" alt="...">
+            </a>
+          </div>
+          <div class="navbar-inner">
+            <!-- Collapse -->
+            <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+              <!-- Nav items -->
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'disponibilites:dashboard' %}">
+                    <i class="ni ni-tv-2 text-black"></i>
+                    <span class="nav-link-text">Tableau des bord</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  {% if request.user|has_group:"Administrateur" %}
+                    <a class="nav-link" href="/admin/auth/user/{{ request.user.id }}/change/">
+                      <i class="ni ni-badge text-black"></i>
+                      <span class="nav-link-text">Profile</span>
+                    </a>
+                  {% endif %}
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/admin/rdv/responsable/" target="_blank">
+                    <i class="ni ni-single-02 text-black"></i>
+                    <span class="nav-link-text">Responsable</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'disponibilites:dashboard_evt' %}">
+                        <i class="ni ni-calendar-grid-58 text-black"></i>
+                        <span class="nav-link-text">Evènements</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                {% if request.user|has_group:"Agent" or request.user|has_group:"Adjoint"  %}
+                  <a class="nav-link" href="{% url 'disponibilites:edit_agent' %}">
+                    <i class="ni ni-badge text-black"></i>
+                    <span class="nav-link-text">Profile</span>
+                  </a>
+                {% endif %}
+              </li>
+    
+                <li class="nav-item">
+                  {% if request.user|has_group:"Administrateur" %}
+                    <a class="nav-link" href="{% url 'disponibilites:notifications_see' %}">
+                      <i class="ni ni-bell-55 text-black"></i>
+                      <span class="nav-link-text">Notifications</span>
+                      <div id="badge_notif"></div>
+                    </a>
+                  {% endif %}
+                </li>
+    
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <i class="ni ni-bullet-list-67 text-black"></i>
+                    <span class="nav-link-text">Tables</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'disponibilites:dashboard_rdv' %}">
+                    <i class="ni ni-book-bookmark text-black"></i>
+                    <span class="nav-link-text">Rendez-Vous</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'disponibilites:logout' %}">
+                    <i class="ni ni-circle-08 text-black"></i>
+                    <span class="nav-link-text">Deconnexion</span>
+                  </a>
+                </li>
+              </ul>
+              <!-- Divider -->
+              <hr class="my-3">
+              <!-- Heading -->
+              <!-- Navigation -->
+            </div>
+          </div>
+        </div>
+      </nav>
+
+
+
+
+
+    <!--<div class="card">
+        <nav class="nav nav-pills flex-column">
+            <a href="{% url 'disponibilites:dashboard' %}" class="flex-sm-fill text-sm-center nav-link"><img src="{% static 'images/logo2.png' %}" class="img-fluid d-inline-block align-top" width="120" height="140" alt="logo"></a>
+            <a href="{% url 'disponibilites:dashboard' %}" class="flex-sm-fill text-sm-left nav-link ">Tableau de Bord</a>
+            <div class="dropright">
+                <a class="nav-link dropdown-toggle" href="#" role="button" id="deroulanta" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Rendez-vous</a>
+                <div class="dropdown-menu" aria-labelledby="deroulanta">
+                    <a class="dropdown-item" href="{% url 'disponibilites:dashboard_rdv' %}">Consulter</a>
+                    <a class="dropdown-item" href="{% url 'rdv:nouveau' %}">Ajouter</a>
+                    <a class="dropdown-item" href="/admin/rdv">Modifier/supprimer</a>
+                </div>
+            </div>
+            <div class="dropright">
+                <a class="nav-link dropdown-toggle" href="#" role="button" id="deroulanta1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Evènement</a>
+                <div class="dropdown-menu" aria-labelledby="deroulanta1">
+                    <a class="dropdown-item" href="{% url 'disponibilites:dashboard_evt' %}">Consulter</a>
+                    <a class="dropdown-item" href="{% url 'disponibilites:event_add' %}">Ajouter</a>
+                    <a class="dropdown-item" href="/admin/disponibilites">Modifier/supprimer</a>
+                </div>
+            </div>
+
+            <div class="dropright">
+                <a class="nav-link dropdown-toggle" href="#" role="button" id="deroulanta2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Statistique</a>
+                <div class="dropdown-menu" aria-labelledby="deroulanta2">
+                    <a class="dropdown-item" href="{% url 'disponibilites:dashboard_evt' %}">Consulter</a>
+                </div>
+            </div>
+            <div class="dropright">
+                <a class="nav-link dropdown-toggle" href="#" role="button" id="deroulanta3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mon compte</a>
+                <div class="dropdown-menu" aria-labelledby="deroulanta3">
+                    <a class="dropdown-item" href="/admin">Mes informations</a>
+                    <a class="dropdown-item" href="/admin">Modifier</a>
+                </div>
+            </div>
+            <a href="{% url 'disponibilites:logout' %}" class="flex-sm-fill text-sm-left nav-link ">Deconnexion</a>
+        </nav>
+    </div>-->
+    
+   

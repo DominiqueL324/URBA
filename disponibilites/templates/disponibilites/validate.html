@@ -1,0 +1,155 @@
+{% extends 'rdv/base.html' %}
+{% load static %}
+{% block body %}
+<div class="header pb-6"  style="background-color: rgb(239, 243, 245);">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="alert ">
+            </div>
+        </div>
+        <div class=" mt--12 mb-1"  style="background-color: rgb(239, 243, 245);">
+            <div class="row">
+                <div class="card  col-md-12">
+                    <div class="card-header">
+                        <p class="h2 text-black d-inline-block mb-0">Valider le Rendez-vous de Mr/Mdm {{rdv.client.nom }} {{rdv.client.prenom }} du {{rdv.date_r|date:'D d M Y'}} au service {{ rdv.service.nom }}</p>
+                    </div>
+        
+                    <div class="form-group row">
+                        <div class="form-group col-md-3">
+                            <label for="staticService" class=" col-form-label"><strong>Service</strong></label>
+                                <div class="input-group">
+                                    <input type="text" readonly class="form-control-plaintext" id="staticService" value=" {{ rdv.service.nom }} ">
+                                </div>
+                        </div> 
+                        <div class="form-group col-md-3">
+                            <label for="staticDate" class=" col-form-label"><strong>Date</strong></label>
+                            <div class="form-group ">
+                                <input type="text" readonly class="form-control-plaintext" id="staticDate" value="{{ rdv.date_r|date:'D d M Y' }}" >
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="staticHeure" class=" col-form-label"><strong>Heure</strong></label>
+                            <div class="form-group">
+                                <input type="time" readonly class="form-control-plaintext" id="staticHeure" value="{{ rdv.heure_r }}" >
+                            </div> 
+                        </div>
+                                
+                        <div class="form-group col-md-3">
+                            <label for="staticPersonne" class="col-form-label"><strong>Personne(s)</strong> </label>
+                                <div class="form-group">
+                                    <input type="text" readonly class="form-control-plaintext" id="staticPersonne" value=" {{ rdv.nombre_personne }} " >
+                                </div>
+                        </div>
+                    </div>
+        
+                    <div class="form-group row">
+                        <div class="form-group col-md-3">
+                            <label for="staticNom" class=" col-form-label"><strong>Nom de Famille</strong></label>
+                            <div class="input-group">
+                                <input type="text" readonly class="form-control-plaintext" id="staticNom" value=" {{ rdv.client.nom }} " >
+                            </div>
+                        </div> 
+                        <div class="form-group col-md-3">
+                            <label for="staticPrenom" class=" col-form-label"><strong>Prénom</strong></label>
+                            <div class="input-group">
+                                <input type="text" readonly class="form-control-plaintext" id="staticPrenom" value=" {{ rdv.client.prenom }} " >
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="staticEmail" class=" col-form-label"><strong>Email</strong></label>
+                            <div class="input-group">
+                                <input type="email" readonly class="form-control-plaintext" id="staticEmail" value=" {{ rdv.client.email }} " >
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="staticTel" class=" col-form-label"><strong>Téléphone</strong></label>
+                            <div class="input-group">
+                                <input type="tel" readonly class="form-control-plaintext" id="staticTel" value=" {{ rdv.client.telephone }} " >
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="form-group row">
+                        <div class="form-group col-md-4">
+                            <label for="staticAdresse" class=" col-form-label"><strong>Adresse</strong></label>
+                            <div class="input-group">
+                                <input type="text" readonly class="form-control-plaintext" id="staticAdresse" value=" {{ rdv.client.adresse }} " >
+                            </div>
+                        </div> 
+                        <div class="col-md-4">
+                            <label for=""><strong>Rendez-vous Téléphonique?</strong></label>
+                            {% if rdv.by_phone %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="phoneRadios" id="phoneRadios1" value="Teloption1" checked readonly="readonly">
+                                <label class="form-check-label" for="phoneRadios1">
+                                Oui
+                                </label>
+                            </div>
+        
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="phoneRadios" id="phoneRadios2" value="Teloption2" readonly="readonly" >
+                                <label class="form-check-label" for="phoneRadios2">
+                                Non
+                                </label>
+                            </div>
+                            {% else %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="phoneRadios" id="phoneRadios1" value="Teloption1" readonly>
+                                <label class="form-check-label" for="phoneRadios1">
+                                    Oui
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="phoneRadios" id="phoneRadios2" value="Teloption2" checked readonly >
+                                <label class="form-check-label" for="phoneRadios2">
+                                    Non
+                                </label>
+                            </div>
+                            {% endif %} 
+                        </div>
+                        <div class="col-md-4">
+                            <label for=""><strong>Service Urbanisme?</strong></label>
+                            {% if rdv.urbanisme %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Urbaoption1" checked readonly>
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        Oui
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Urbaoption2" readonly>
+                                    <label class="form-check-label" for="exampleRadios2">
+                                        Non
+                                    </label>
+                                </div>
+                            {% else %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Urbaoption1" readonly>
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        Oui
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Urbaoption2" checked readonly>
+                                    <label class="form-check-label" for="exampleRadios2">
+                                        Non
+                                    </label>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        {% if rdv.en_attente %}
+                            <a class="btn btn-danger" href="{% url 'disponibilites:validate_go' id=rdv.id %}">Mettre en attente</a> 
+                        {% else %}
+                            <a class="btn btn-primary" href="{% url 'disponibilites:validate_go' id=rdv.id %}">Approuver</a>
+                        {% endif %} 
+                        <a class="btn btn-warning" style="color: whitesmoke;" href="{% url 'disponibilites:dashboard_rdv' %}">Annuler</a> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

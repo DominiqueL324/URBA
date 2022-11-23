@@ -1,0 +1,322 @@
+{% extends 'rdv/base.html' %}
+{% load static %}
+{% block body %}
+<div class="header pb-6"  style="background-color: rgb(239, 243, 245);">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'warning' %}
+                        <div class="alert alert-warning" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="alert ">
+            </div>
+        </div>
+        <div class=" mt--16 mb--1"  style="background-color: rgb(239, 243, 245);">
+            <div class="row">
+                <div class="col-md-1">
+
+                </div>
+                <div class="card  col-md-12">
+                    
+                    {% if errors %}
+                        <div>
+                            {% for key, error in errors %}
+                                {% autoescape off %}
+                                    <div class="alert alert-danger">
+                                        {{ error }}
+                                    </div>
+                                {% endautoescape %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form class="monform" id="monform" method="POST" action="{% url 'rdv:add' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="card-header">Prendre un Rendez-vous  <div style="color: red;" id="dateError"></div></h5>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="nav-item">
+                                    <a href="#responsable" id="service" class="nav-link active " data-toggle="tab" >Services </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#rdv" id="rdvs" class="nav-link  " data-toggle="tab">Jours</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#horaires" id="horraires" class="nav-link  " data-toggle="tab">Horaires</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#personnel" id="personnels" class=" nav-link  " data-toggle="tab">Informations Personnelles </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" style="padding-top: 2%;">
+
+                                <div class="tab-pane fade show active" id="responsable">
+            
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <label for="">Services</label>
+                                            {{form.service}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary" id="next1" type="button">Suivant</button>
+                                        </div>
+                                        
+                                        <div class="col-md-10">
+                                            <div id="warning" class="alert alert-danger fade show" style="display: none;" role="alert">
+                                                <strong>Attention</strong> Vous devez selectionner un service pour continuer
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+            
+                                <div class="tab-pane fade" id="rdv">
+                                    <div class="form-row">
+                                        <div class="col-md-8">
+                                            <div id="evoCalendar"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="inputDate">Date</label>
+                                                {{ form.date }}
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12" id="creneau">
+                                                    
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="inputHeure">Heure</label>
+                                                    {{ form.heure }}
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="inputNombre">Nombre de Personne</label>
+                                                    {{ form.nombre_person }}
+                                                </div>
+                                            </div>
+                                            <div class=" form-row">
+                                                <div class=" form-group col-md-5">
+                                                    <button class="btn btn-primary" id="prev1" type="button">precedent</button>
+                                                </div>
+                                                <div class="form-group col-md-1">
+                                                    <button type="button" id="next2"  class="btn btn-primary">Suivant</button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div id="warning2"  style="display: none;color: red;" role="alert">
+                                                        <small>Attention!!! à cette date aucun Rendez-vous n'est possible pour ce service</small> 
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div id="warning1"  style="display: none;color: red;" role="alert">
+                                                        <small>Attention Tout les champs sont obligatoires</small> 
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div id="warning3"  style="display: none;color: red;" role="alert">
+                                                        <small>Attention Aucun responsable pour ce service</small> 
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div id="warning4"  style="display: none;color: red;" role="alert">
+                                                        <small>Attention ce service n'est pas ouvert les weekends</small> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="tab-pane fade" id="horaires">
+                                   <div class="col-md-12">
+                                       <div class="col-md-8">
+                                            <div id='calendar'></div>
+                                       </div>
+                                   </div>
+                                </div>
+
+
+                                <div class="tab-pane fade " id="personnel">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="inputNom"><span style="color: red;">*</span> Nom de Famille</label>
+                                            <div class="input-group has-validation">
+                                                {{ form.nom }}
+                                                <div class="invalid-feedback">
+                                                    Le nom est obligatoire
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="inputPrenom"><span style="color: red;">*</span> Prénom(s)</label>
+                                            <div class="input-group has-validation">
+                                                {{ form.prenom }}
+                                                <div class="invalid-feedback">
+                                                    Le Prénom est obligatoire
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4 ">
+                                            <label for="telephone"><span style="color: red;">*</span> Tel</label>
+                                            <br>
+                                            <div class="input-group has-validation">
+                                                {{ form.tel_number }}
+                                                <div class="invalid-feedback">
+                                                    Le Numéro de téléphone est obligatoire
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+
+                                        <div class="form-group col-md-4">
+                                            <label for="inputEmail"><span style="color: red;">*</span> Email</label>
+                                            <div class="input-group has-validation">
+                                                {{ form.email }}
+                                                <div class="invalid-feedback">
+                                                    L'Email est obligatoire
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="inputAdress"><span style="color: red;">*</span>Adresse <small><b>(celles de Saint-medard-en-jalles)</b> </small></label>
+                                            <div class="input-group has-validation">
+                                                {{ form.adress }}
+                                                <div class="invalid-feedback">
+                                                    L'adresse est obligatoire
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="inputAdress">Souhaitez vous ajouter des fichier</label>
+                                            {{ form.fichier }}
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                    
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label for=""> <span style="color: red;">*</span> Souhaitez vous un Rendez-vous Téléphonique?</label>
+                                            {% for radio in form.phone %}
+                                                <div class="form-check col-md-3">
+                                                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                                        <span class="radio"></span> {{ radio.tag }} {{ radio.choice_label }} </span>
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label for=""><span style="color: red;">*</span>  Avez-vous déjà pris contact avec le services d'urbanisme ?</label>
+                                            {% for radio in form.urbanisme %}
+                                                <div class="form-check col-md-3">
+                                                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                                        <span class="radio"></span> {{ radio.tag }} {{ radio.choice_label }} </span>
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label for=""> <span style="color: red;">*</span> <a href="https://www.saint-medard-en-jalles.fr/page/politique-de-gestion-des-donnees-personnelles" target="_blank" rel="noopener noreferrer" >Politique de confidentialité</a> </label>
+                                            <div class="form-check col-md-12">
+                                                <span>
+                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required >
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        J'ai lu et j'accepte
+                                                    </label>
+                                                </span>
+                                                
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-row">
+                                        <script src='https://www.google.com/recaptcha/api.js'></script>
+                                        <div class=" form-group col-md-12 col-sm-12 col-12">
+                                            <div class="g-recaptcha" data-sitekey="6LeLdCgaAAAAABZPV_w-_bWBzACxYhSBZ5rkmWRe" data-callback="correctCaptcha"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class=" form-row">
+                                        <div class=" col-12 col-sm-2 col-md-2">
+                                            <button class="btn btn-primary" id="prev2" type="button">precedent</button>
+                                        </div>
+                                        <div class="col-md-2 col-12 col-sm-2">
+                                            <button type="submit" class="btn btn-success">Réserver</button>
+                                        </div>
+                                        <div class="col-md-2 col-12 col-sm-2">
+                                            <button class="btn btn-danger" type="reset">Annuler</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>                
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    url = "{% url 'rdv:get_creneau_ajax' %}"
+    configCalendar(url)
+        
+    document.getElementById('next2').onclick = function(e){
+        url = "{% url 'disponibilites:event_get_for_rdv' %}"
+        Next2Click(url,e)
+    }
+</script>
+{% endblock %}
+    

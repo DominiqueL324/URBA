@@ -1,0 +1,187 @@
+{% extends 'rdv/base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="header pb-6"  style="background-color: rgb(239, 243, 245);">
+    <div class="container-fluid">
+
+
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+              <div class="col-lg-6 col-7">
+                <h2 class="h2 text-black d-inline-block mb-0">Mr {{agent.last_name}} {{agent.first_name}} la liste de vos Evènement</h2>
+              </div>
+            </div>
+            <!-- Card stats -->
+            <div class="row">
+              <div class="col-xl-3 col-md-6">
+                <div class="card card-stats">
+                  <!-- Card body -->
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col">
+                        <h5 class="card-title text-uppercase text-muted mb-0">Nombre d'administrés</h5>
+                        <span class="h2 font-weight-bold mb-4">350</span>
+                      </div>
+                    </div>
+                    <a href="#">
+                      <p class="mt-3 mb-0 text-sm">
+                        <span class=" mr-4"><i class="ni ni-bullet-list-67 text-black"></i></span>
+                        <span class="text-nowrap">Nos administrés</span>
+                      </p>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6">
+                <div class="card card-stats">
+                  <!-- Card body -->
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col">
+                        <h5 class="card-title text-uppercase text-muted mb-0">Nombre de RDV</h5>
+                        <span class="h2 font-weight-bold mb-4">350</span>
+                      </div>
+                    </div>
+                    <a href="#">
+                      <p class="mt-3 mb-0 text-sm">
+                        <span class=" mr-4"><i class="ni ni-bullet-list-67 text-black"></i></span>
+                        <span class="text-nowrap"> Nos Rendez-Vous </span>
+                      </p>
+                    </a>
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6">
+                <div class="card card-stats">
+                  <!-- Card body -->
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col">
+                        <h5 class="card-title text-uppercase text-muted mb-0">Nombre de Responsables</h5>
+                        <span class="h2 font-weight-bold mb-4">350</span>
+                      </div>
+                    </div>
+                    <a href="#">
+                      <p class="mt-3 mb-0 text-sm">
+                        <span class=" mr-4"><i class="ni ni-bullet-list-67 text-black"></i></span>
+                        <span class="text-nowrap">Nos responsables</span>
+                      </p>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6">
+                <div class="card card-stats">
+                  <!-- Card body -->
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col">
+                        <h5 class="card-title text-uppercase text-muted mb-0">Nombre de Services</h5>
+                        <span class="h2 font-weight-bold mb-4">350</span>
+                      </div>
+                    </div>
+                    <a href="#">
+                      <p class="mt-3 mb-0 text-sm">
+                        <span class=" mr-4"><i class="ni ni-bullet-list-67 text-black"></i></span>
+                        <span class="text-nowrap">Nos services</span>
+                      </p>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+            {% if evts|length_is:"0" %}
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                    <div class="card-header border-0">
+                        <p class="mt-3 mb-7 text-xl">Désolé Aucun Evènements disponible pour vous cliquez <a href="{% url 'disponibilites:event_add' %}">sur ce lien</a> pour en créer un</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="row">
+                <div class="col text-right">
+                    <a href="{% url 'disponibilites:event_add' %}" class="btn btn-sm btn-primary">Ajouter</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" >
+                    <div id="evoCalendar"></div>
+                </div>
+            </div>
+        {% endif %}
+    </div>   
+    
+</div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('#evoCalendar').evoCalendar({
+            firstDayOfWeek: 1,// Monday
+            sidebarToggler:true,
+            sidebarDisplayDefault:false,
+            eventListToggler:true,
+            eventDisplayDefault:false,
+            todayHighlight:true,
+            format:'mm/dd/yyyy',
+            titleFormat:'MM yyyy',
+            eventHeaderFormat:'d MM, yyyy',
+            language:'fr',
+            theme:'Midnight Blue',
+        }).on('selectDate',function(newDate, oldDate) {
+            document.getElementById("inputDate").setAttribute('value',oldDate)
+        });
+    
+        $(document).ready(function(){
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'disponibilites:event_get' %}",
+                success: function (response) {
+                    i = 1
+                    response["evt"].forEach(function(item){
+                            $("#evoCalendar").evoCalendar('addCalendarEvent', [
+                                {
+                                    id:"event"+i,
+                                    name:item.name,
+                                    date:[item.date_d,item.date_f],
+                                    type:item.type_e,
+                                    color:item.color,
+                                    everyYear:false
+                                }
+                            ]);
+                        i = i+1
+                        //console.log(evts)
+                    })
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            })
+        });
+    </script>
+{% endblock %}

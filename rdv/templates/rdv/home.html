@@ -1,0 +1,86 @@
+{% extends 'rdv/base.html' %}
+{% load static %}
+{% block body %}
+<div class="container-fluid mt--6"  style="background-color: rgb(239, 243, 245);">
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'rdv:home_rdv' %}">Accueill RDV</a> 
+            </li>
+        </ul>
+    <div class="row">
+        
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'warning' %}
+                        <div class="alert alert-warning" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>>
+
+    <div class="card  col-md-12">
+        {% if rdvs|length_is:"0" %}
+          <p>Désolé Aucun Rendez-vous disponible pour vous</p>
+        {% else %}
+        <div class="row">
+            <div class="col-md-4">
+                <h5 class="card-header" >Liste de vos Rendez-vous</h5>
+            </div>
+            <div class="col-md-4 offset-md-3">
+                <input class="form-control" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names or services...."  style="margin-top: 7px;"> 
+            </div>
+            <div class="col-md-1">
+                <a href="{% url 'rdv:nouveau' %}" class="btn btn-primary rounded-circle" style="margin-top: 5px; background-color: #1ce;">+</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" >
+                <div style="height:500px; overflow:auto;">
+                    <table class="table table-bordered" id="myTable">
+                        <thead>
+                        <tr>
+                            <th style="background: #1ce;position: sticky;top: 0;"><input type="checkbox" name="" id=""></th>
+                            <th scope="col" style="background: #1ce;position: sticky;top: 0;">Service</th>
+                            <th scope="col" style="background: #1ce;position: sticky;top: 0;">Client</th>
+                            <th scope="col" style="background: #1ce;position: sticky;top: 0;">Date et Heure</th>
+                            <th scope="col" style="background: #1ce;position: sticky;top: 0;">Personne(s)</th>
+                            <th scope="col" style="background: #1ce;position: sticky;top: 0;">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for rdv in rdvs %}
+                                <tr>
+                                    <td> <input type="checkbox"   name="" id=""> </td>
+                                    <td>{{ rdv.service.nom }}</td>
+                                    <td>{{ rdv.client.nom }}  {{ rdv.client.prenom }}</td>
+                                    <td>{{ rdv.date_r }}  {{ rdv.heure_r }}</td>
+                                    <td style="width: 90px;">{{ rdv.nombre_personne }}</td>
+                                    <td><i class="fas fa-pen-fancy"></i></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+           
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+</div>
+    
+
+{% endblock %}

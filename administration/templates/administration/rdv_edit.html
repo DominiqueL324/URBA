@@ -1,0 +1,264 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block content %}
+<div class="tile is-child is-8">
+    <div class="col-md-12">
+        {% if errors %}
+        <div>
+            {% for key, error in errors %}
+            {% autoescape off %}
+            <p style="color: red;">{{ error }}</p>
+            {% endautoescape %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <div class="notification is-danger" role="alert">
+            {{message}}
+        </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+        <div class="notification is-success" role="alert">
+            {{message}}
+        </div>
+        {% endif %}
+    {% endfor %}
+    <form method="POST" action="{% url 'administration:rdv_edit' id=rdv.id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="title" style="color: #112A46;font-weight: 700;">Editer un rendez-vous du service  {{rdv.service.nom}}</h3>
+        <div class="container" style="margin-top: 20px; margin-bottom: 30px;">
+            <div class="control tile is-vertical">
+                <div class="is-child tile">
+                    <div class="column is-8">
+                        <label>Voulez-vous un RDV téléphonique?</label>
+                    </div>
+                    <label class="checkbox">
+                        {{ form.phone}} 
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        {% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+            <div class="columns">
+                <div class="column is-4">
+                    <label>Responsable</label>
+                </div>
+                <div class="column">
+                    <div class="select is-small">
+                        <select name="respo" id="respo"></select>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Etat du Rendez-vous</label>
+            </div>
+            <div class="column">
+                <div class="select is-small">
+                    <select id="state" name="state">
+                        {% if rdv.etat == 'Approuve' %}
+                            <option value="Approuve" selected> Approuvé</option> 
+                        {% else %}
+                            <option value="Approuve"> Approuvé</option>
+                        {% endif %} 
+                        {% if rdv.etat == 'En attente' %}
+                            <option value="En attente" selected> En attente</option> 
+                        {% else %}
+                            <option value="En attente"> En attente</option>
+                        {% endif %} 
+                        {% if rdv.etat == 'Annule' %}
+                            <option value="Annule" selected> Annulé</option> 
+                        {% else %}
+                            <option value="Annule"> Annulé</option>
+                        {% endif %} 
+                      
+                    </select>
+                </div>
+            </div>
+            <input type="hidden" value={{duree}} name="" id="tmpsService">
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Nouvelle date de rendez-vous</label>
+            </div>
+            <div class="column">
+                {{form.date}}
+                <span style="font-size: x-small;">
+                    <p>Note : l'heure du serveur précède votre heure de 1 heure.</p>
+                </span>
+                <span id="warningWeekend" style="color: red; font-size: small; display: none;">
+                    Désolé ce service n'est pas ouvert les weekends
+                </span>
+                <span id="dateError" style="color: red; font-size: small;">
+
+                </span>
+            </div>
+        </div>
+
+        <div class="columns" id="creneau">
+
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Administré</label>
+            </div>
+            <div class="column">
+                <div class="select is-small">
+                    {{form.administre}}
+                </div>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Heure de rendez-vous</label>
+            </div>
+            <div class="column">
+                {{form.heure}}
+                <span style="font-size: x-small;">
+                    <p>Note  : l'heure du serveur précède votre heure de 1 heure.</p>
+                </span>
+            </div>
+        </div>
+
+         <div class="columns">
+            <div class="column is-4">
+                <label>Heure de rendez-vous</label>
+            </div>
+            <div class="column">
+                {{form.heureF}}
+                <span style="font-size: x-small;">
+                    <p>Note  : l'heure du serveur précède votre heure de 1 heure.</p>
+                </span>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Nombre de personne</label>
+            </div>
+            <div class="column">
+                {{form.nombre_person}}
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Liste des adresses</label>
+            </div>
+            <div class="column">
+                <select class="input is-small" id="adresseI">
+                    {% for rdv in adresses %}
+                        <option value="{{rdv.adresseTarvaux}}">{{rdv.adresseTarvaux}}</option>
+                    {% endfor %}
+                </select>                    
+            </div>
+            
+        </div>
+
+         <div class="columns">
+            <div class="column is-4">
+                <label>Adresses de Travaux</label>
+            </div>
+            <div class="column">
+                {{form.adresseTravaux}}
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Fichier</label>
+            </div>
+            <div class="column">
+                {{form.fichier}}<span style="display: inline"><i class="fas fa-file-import"></i></span><br />
+                <span style="font-size: x-small;">
+                    <p>Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner
+                        plusieurs.</p>
+                </span>
+            </div>
+        </div>
+        <aside class="menu">
+          <ul class="menu-list">
+            <li>
+              <a class="is-active">Liste des fichiers</a>
+              <ul>
+                {% for fichier in  fl %}                                                   
+                    <li class="list-group-item">
+                        <span class="icon-text">
+                            <span class="icon">
+                                <a onclick="Delete({{ fichier.id }})">
+                                <i class="far fa-trash-alt"></i> 
+                                </a>
+                            </span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                             
+                            <span class="icon">
+                                <a href="{{ fichier.fichier.url }}">{{ fichier.fichier }}</a>
+                            </span>
+                        </span>
+                    </li>
+                {% endfor %}
+              </ul>
+            </li>
+          </ul>
+        </aside>
+
+
+
+        <div class="columns">
+            <div class="column">
+                <button id="save" class="is-primary button is-small" type="submit"><span><i class="fas fa-edit"></i></span></button>
+            </div>
+            <div class="column">
+                <a id="delete" class=" is-danger button is-small"><span><i class="fas fa-trash"></i></span></a>
+            </div>
+            <div class="column">
+                <a href="{% url 'administration:rdv_dashboard' %}" class=" is-danger button is-small">Annuler</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    url1 = "{% url 'rdv:get_creneau_ajax' %}"
+    $('#inputDate').change(function () {
+        val = $('#inputDate').val()
+        dateChangeEvent(val, url1)
+    })
+    $('#delete').click(function () {
+        url2 = "{% url 'administration:rdv_delete'  id=rdv.id %}"
+        if (confirm('Voulez vous vraiment supprimer ce Rendez-vous??')) {
+            Delete(url2,"RDV")
+        } else {
+        }
+    })
+    date_r1 = "{{ rdv.date_r|date:'Y-m-d' }}"
+    //alert(date_r1)
+    $("#inputDate").val(date_r1)
+    function del(id) {
+        if (confirm('Voulez vous vraiment supprimer ce Fichier??')) {
+            url = "{% url 'administre:delete_file' %}"
+            idr = "{{ rdv.id }}"
+            removeFile(id,idr,url)
+        } else {
+        }
+    }
+</script>
+{% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+<script>
+    url = "{% url 'administration:get_responsable_ajax_to_edit'%}"
+    id = "{{rdv.id}}"
+    loadResponsable(id,url)
+</script>    
+{% endif %}
+{% endblock %}

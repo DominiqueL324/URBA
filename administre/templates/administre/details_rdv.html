@@ -1,0 +1,131 @@
+{% extends 'administre/layout/base.html' %}
+{% load static %}
+{% block content %}
+<div class="header pb-6"  style="background-color: rgb(239, 243, 245);">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'warning' %}
+                        <div class="alert alert-warning" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="alert ">
+            </div>
+        </div>
+        <div class=" mt--16 mb--1"  style="background-color: rgb(239, 243, 245);">
+            <div class="row">
+                <div class="card  col-md-12">
+                    
+                    {% if errors %}
+                        <div>
+                            {% for key, error in errors %}
+                                {% autoescape off %}
+                                    <div class="alert alert-danger">
+                                        {{ error }}
+                                    </div>
+                                {% endautoescape %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="card-header">Détails de mon RDV au service {{rdv.service.nom}} <div style="color: red;" id="dateError"></div></h5>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                          
+                            <div class="tab-content" style="padding-top: 2%;">
+                                <p>Détails du Rendez-vous</p>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="">Objet</label>
+                                            <input class="form-control" value="{{ rdv.service.nom }}" readonly type="text">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputDate">Date</label>
+                                            <input class="form-control" value="{{ rdv.date_r | date:"d/m/Y" }}" readonly type="text">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputDate">Heure de début</label>
+                                            <input class="form-control" value="{{ rdv.heure_r | time }}" readonly type="text">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputDate">Heure de fin</label>
+                                            <input class="form-control" value="{{ rdv.heure_f | time }}" readonly type="text">
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <p>Mes Informations</p>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="">Nom et Prénom</label>
+                                            <input class="form-control" value="{{ rdv.client.nom }} {{ rdv.client.prenom }}" readonly type="text">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputDate">Téléphone</label>
+                                            <input class="form-control" value="{{ rdv.client.telephone }}" readonly type="text">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputDate">Email </label>
+                                            <input class="form-control" value="{{ rdv.client.email}}" readonly type="text">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputNombre">Adresse</label>
+                                            <input type="text" value="{{ rdv.client.adresse  }}"  class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="inputNombre">Adresse des travaux</label>
+                                            <input type="text" value="{{ rdv.adresseTarvaux  }}"  class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="ol-md-12 col-sm-12">
+                                            <h4 class="text-muted">Liste des fichiers du RDV</h4> 
+                                            <ul class="list-group" id="liste">
+                                                {% for fichier in  fl %}                                                   
+                                                    <li class="list-group-item"></a>
+                                                        <a href="{{ fichier.fichier.url }}">{{ fichier.fichier }}</a>
+                                                    </li>
+                                                {% endfor %}
+                                              
+                                              
+                                            </ul>
+                                          </div>
+                                    </div>
+
+                                    <div class=" form-row">
+                                        <div class="col-md-2 col-12 col-sm-2">
+                                            <a href="{% url 'administre:dashboard' %}" class="btn btn-danger">Retour</a>
+                                        </div>
+                                    </div>
+
+                            </div>                
+
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

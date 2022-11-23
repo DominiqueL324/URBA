@@ -1,0 +1,111 @@
+{% extends 'administration/layouts/base.html' %}
+{% load user_tags %}
+{% block select %}
+<form class="searh-contianer">
+    <div class="w-">
+        <div class="select is-small is-fullwidth">
+            <select id="filterResponsable">
+                <option value="">critère de recherche</option>
+                <option value="email">Email</option>
+                <option value="nom">Nom</option>
+            </select>
+        </div>
+    </div>
+    <div class="w-" id="dataSearchFieldResponsable">
+    </div>
+    <div class="w-">
+        <a href="#" class="w-100 button is-small is-primary" id="goSerachResponsable">Rechercher</a>
+    </div>
+</form>
+{% endblock %}
+{% block content %}
+
+{% for message in messages %}
+    {% if message.tags == 'error' %}
+        <div class="notification is-danger" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+        <div class="notification is-success" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+{% endfor %}
+
+<div style="margin-bottom: 15px;">
+    <h2 class="title" style="color: #112A46;font-weight: 700;">Agents Responsables de service</h2>
+</div>
+<div class="box">
+    {% if rdvs|length_is:"0" %}
+        <h2 class="sub-title" style="color: #051d38;font-weight: 700;">Aucun Responsable trouvé</h2>
+    {% else %}
+    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <span><a href="{% url 'administration:responsable_add' %}" class="button is-small"><i class="fa fa-plus"></i></a></span>
+        <div class="align-self-center control columns is-multiline">
+            <div class="column">
+                <a href="{% url 'administration:responsable_dashboard' %}" style="color: #051d38;"> <span><i class="fas fa-redo-alt"></i></span> </a>
+            </div>
+            <div class="column">
+                <a href="#" id="goDelete" class=" is-danger button is-small">
+                    <span><i class="fa fa-trash" ></i></span>
+                </a>
+            </div> 
+        </div>
+    </div>
+    <div class="table-container" style="overflow: scroll;width: inherit; position: relative;">
+        <table class="table" style="overflow: scroll;min-width: 600px;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>NOM D'UTILISATEUR</th>
+                    <th>ADDRESSE ELECTRONIQUE</th>
+                    <th>PRENOM</th>
+                    <th>NOM</th>
+                    <th>ROLE</th>
+                    <th>DETAILS</th>
+                </tr>
+            </thead>
+
+            <tbody id="contentTableResponsable">
+                {% for responsable  in responsables %}
+                <tr>
+                    {% if responsable.user|has_group:"Agent" %}
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" id="addDel{{responsable.id}} " onclick="addToDelete({{ responsable.id }})">
+                            </label>
+                        </td>
+                        <td>{{ responsable.user.username }}</td>
+                        <td>{{ responsable.user.email }}</td>
+                        <td>{{ responsable.user.first_name }}</td>
+                        <td>{{ responsable.user.last_name }}</td>
+                        <td>Agent</td>
+                    {% endif %}
+                    <td><a href="{% url 'administration:responsable_get_edit' id=responsable.id %}"
+                        class="is-success button is-small"><span><i class="fa fa-eye"></i></span></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $('#goSerachResponsable').click(function () {
+        url = "{% url 'administration:get_responsable_ajax' %}"
+        getResponsableBySearch(url)
+    })
+    $('#filterResponsable').change(function () {
+        val = $('#filterResponsable').val()
+        changeInputResponsable(val)
+    })
+    $('#goDelete').click(function(){
+        url = "{% url 'administration:delete_many_rdv' %}"
+        goDelete(url,"RSP")
+    })
+</script>
+{% endblock %}

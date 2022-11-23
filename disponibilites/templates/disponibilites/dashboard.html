@@ -1,0 +1,193 @@
+{% extends 'rdv/base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="col-md-12">
+  {% for message in messages %}
+    {% if message.tags == 'error' %}
+        <div class="alert alert-danger" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+{% endfor %}
+</div>
+<div class="header pb-6"  style="background-color: rgb(239, 243, 245);">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h2 class="h2 text-black d-inline-block mb-0">Tableau de Bord</h2>
+          </div>
+        </div>
+        <!-- Card stats -->
+        <div class="row">
+          <div class="col-xl-3 col-md-6">
+            <div class="card card-stats">
+              <!-- Card body -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">Nombre d'administrés</h5>
+                    <span class="h2 font-weight-bold mb-4">350</span>
+                  </div>
+                </div>
+                <a href="#">
+                  <p class="mt-3 mb-0 text-sm">
+                    <span class=" mr-4"><i class="ni ni-bullet-list-67 text-black"></i></span>
+                    <span class="text-nowrap">Nos administrés</span>
+                  </p>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-6">
+            <div class="card card-stats">
+              <!-- Card body -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">Nombre de RDV</h5>
+                    <span class="h2 font-weight-bold mb-4">350</span>
+                  </div>
+                </div>
+                <a href="#">
+                  <p class="mt-3 mb-0 text-sm">
+                    <span class=" mr-4"><i class="ni ni-bullet-list-67 text-black"></i></span>
+                    <span class="text-nowrap"> Nos Rendez-Vous </span>
+                  </p>
+                </a>
+                
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-6">
+            <div class="card card-stats">
+              <!-- Card body -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">Nombre de Responsables</h5>
+                    <span class="h2 font-weight-bold mb-4">350</span>
+                  </div>
+                </div>
+                <a href="#">
+                  <p class="mt-3 mb-0 text-sm">
+                    <span class=" mr-4"><i class="ni ni-bullet-list-67 text-black"></i></span>
+                    <span class="text-nowrap">Nos responsables</span>
+                  </p>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-6">
+            <div class="card card-stats">
+              <!-- Card body -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">Nombre de Services</h5>
+                    <span class="h2 font-weight-bold mb-4">350</span>
+                  </div>
+                </div>
+                <a href="#">
+                  <p class="mt-3 mb-0 text-sm">
+                    <span class=" mr-4"><i class="ni ni-bullet-list-67 text-black"></i></span>
+                    <span class="text-nowrap">Nos services</span>
+                  </p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid mt--6"  style="background-color: rgb(239, 243, 245);">
+        <div class="row">
+            
+                    {% if rdvs|length_is:"0" %}
+                    <div class="col-xl-12">
+                      <div class="card">
+                        <div class="card-header border-0">
+                          <p class="mt-3 mb-7 text-xl">Désolé Aucun Rendez-vous disponible pour vous</p>
+                        </div>
+                      </div>
+                    </div>
+                    {% else %}
+                      <div class="col-xl-8">
+                        <div class="card">
+                          <div class="card-header border-0">
+                              <div class="row align-items-center">
+                                  <div class="col">
+                                      <h3 class="mb-0">Mr {{agent.first_name}} Vos Rendez-Vous</h3>
+                                  </div>
+                                  <div class="col text-right">
+                                      <a href="{% url 'disponibilites:dashboard_rdv' %}" class="btn btn-sm btn-primary">voir tout</a>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="table-responsive">
+                              <!-- Projects table -->
+                              <table class="table align-items-center table-flush">
+                                  <thead class="thead-light">
+                                      <tr>
+                                          <th scope="col" style="position: sticky;top: 0;">Service</th>
+                                          <th scope="col" style="position: sticky;top: 0;">Client</th>
+                                          <th scope="col" style="position: sticky;top: 0;">Date et Heure</th>
+                                          <th scope="col" style="position: sticky;top: 0;">Aprouvé</th>
+                                          <th scope="col" style="position: sticky;top: 0;">Actions</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for rdv in rdvs %}
+                                          <tr>
+                                              <th>{{ rdv.service.nom }}</th>
+                                              <td>{{ rdv.client.nom }}  {{ rdv.client.prenom }}</td>
+                                              <td>{{ rdv.date_r }}  {{ rdv.heure_r }}</td>
+                                              {% if rdv.en_attente %}
+                                                  <td style="width: 90px;">Oui</td>
+                                              {% else %}
+                                                  <td style="width: 90px;">Non</td>
+                                              {% endif %}
+                                              <td><a href="{% url 'disponibilites:validate' id=rdv.id %}"><i class="fas fa-pen-fancy"></i></a></td>
+                                          </tr>
+                                      {% endfor %}
+                                  </tbody>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+          
+                  <div class="col-xl-4">
+                      <div class="card">
+                        <div class="card-header bg-transparent">
+                          <div class="row align-items-center">
+                            <div class="col">
+                              <h6 class="text-uppercase text-muted ls-1 mb-1">Efficacité </h6>
+                              <h5 class="h3 mb-0">Statistiques</h5>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          <!-- Chart -->
+                          <div class="chart" style="height: 140px;">
+                            <canvas id="chart-bars" class="chart-canvas"></canvas>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+
+
+{% endblock %}

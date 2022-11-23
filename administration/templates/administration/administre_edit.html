@@ -1,0 +1,107 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% block content %}
+<div class="tile is-child is-8">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="notification is-danger" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+            <div class="notification is-success" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+    {% endfor %}
+    {% if errors %}
+        <div>
+            {% for key, error in errors %}
+                {% autoescape off %}
+                    <p style="color: red;">
+                        {{ error }}
+                    </p>
+                {% endautoescape %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <h1 class="title" style="color: #112A46;font-weight: 700;">Modifier les informations d'un administré</h1>
+
+    <form method="POST" action="{% url 'administration:administre_edit' id=administre.id %}">
+        {% csrf_token %}
+        <div class="columns">
+            <div class="column is-4">
+                <label>Nom</label>
+            </div>
+            {{form.nom}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Prénom</label>
+            </div>
+            {{form.prenom}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Téléphone</label>
+            </div>
+            <div class="column">
+                {{form.tel_number}}
+                <p class="help is-danger" id="erreurPhone" style="display: none;">Le Numéro de téléphone doit commencé par 0 et avoir 10 chiffres</p>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Email</label>
+            </div>
+            {{form.email}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Adresse </label>
+            </div>
+            {{form.adress}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Nouveau mot de passe</label>
+            </div>
+            {{form.mdp}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Repetez le mot de passe</label>
+            </div>
+            {{form.mdp1}}
+        </div>
+        <div class="columns">
+            <div class="column">
+                <button id="go" class="is-primary button is-small" type="submit"><i class="fas fa-edit"></i></button>
+            </div>
+            <div class="column">
+                <a id="deleteAdm" class=" is-danger button is-small"><span><i class="fas fa-trash"></i></span></a>
+            </div>
+            <div class="column">
+                <a href="{% url 'administration:administre_dashboard' %}" class=" is-danger button is-small">Annuler</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $('#deleteAdm').click(function () {
+        url = "{% url 'administration:administre_delete'  id=administre.id %}"
+        if (confirm('Voulez vous vraiment supprimer??')) {
+            Delete(url,"ADM")
+        } else {
+        }
+    })
+</script>
+{% endblock %}

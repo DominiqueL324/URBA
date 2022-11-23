@@ -1,0 +1,300 @@
+{% extends 'administration/layouts/base.html' %}
+{% load user_tags %}
+{% block select %}
+<form class="searh-contianer">
+    <div class="w-">
+        <div class="select is-small is-fullwidth">
+            <select id="filterDashboard">
+                <option value="">critère de recherche</option>
+                <option value="service">Service</option>
+                <option value="administre">Administré</option>
+                <option value="date">Date</option>
+            </select>
+        </div>
+    </div>
+    <div class="w-" id="dataSearchFieldDashboard">
+    </div>
+    <div class="w-">
+        <a href="#" class="w-100 button is-small is-primary" id="goSerachDashboard">Rechercher</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block content %}
+<h1 class="title" style="color: #112A46;font-weight: 700;">Tableau de bord</h1>
+<div class="section-stats">
+    <div class="card">
+        <p><a href="{% url 'administration:administre_dashboard' %}">nombre d'administrés</a></p>
+        <h4 class="icon"> <a href="{% url 'administration:administre_dashboard' %}">{{ nombre_administre }}</a> </h4>
+    </div>
+    <div class="card">
+        <p> <a href="{% url 'administration:rdv_dashboard' %}">nombre de rdv</a></p>
+        <h4 class="icon"><a href="{% url 'administration:rdv_dashboard' %}">{{ rdvs|length }}</a></h4>
+    </div>
+    {% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+    <div class="card">
+        <p><a href="{% url 'administration:responsable_dashboard' %}">nombre de responsable</a></p>
+        <h4 class="icon"> <a href="{% url 'administration:responsable_dashboard' %}">{{ nombre_responsable }}</a> </h4>
+    </div>
+    {% endif %}
+    {% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur"  %}
+    <div class="card">
+        <p><a href="{% url 'administration:service_dashboard' %}">nombre de service</a></p>
+        <h4 class="icon"><a href="{% url 'administration:service_dashboard' %}">{{ nombre_service }}</a>  </h4>
+    </div>
+    {% endif %}    
+    {% if request.user|has_group:"Agent"  %}
+    <div class="card">
+        <p><a href="{% url 'administration:conges' %}">Mes congés</a></p>
+        <h4 class="icon"> <a href="{% url 'administration:conges' %}">{{ nombre_conge }}</a>  </h4>
+    </div>
+    {% endif %}
+</div>
+<div class="col-md-12">
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="notification is-danger" role="alert">
+        {{message}}
+    </div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+    <div class="notification is-success" role="alert">
+        {{message}}
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+<div class="container" style="margin-top: 20px;">
+    <div class="control columns is-multiline">
+        <div class="column">
+            <label class="radio">
+                <input type="radio" name="foobar" id="validated"> &nbsp; Approuvés
+            </label>
+        </div>
+        <div class="column">
+            <label class="radio">
+                <input type="radio" name="foobar" id="waiting"> &nbsp; En attentes
+            </label>
+        </div>
+       <!-- <div class="column">
+            <label class="radio">
+                <input type="radio" name="foobar" id="reported"> &nbsp; Reportés
+            </label>
+        </div>-->
+        <div class="column">
+            <label class="radio">
+                <input type="radio" name="foobar" id="canceled"> &nbsp; Annulés
+            </label>
+        </div>
+        <div class="column">
+            <label class="radio">
+                <input type="radio" name="foobar" id="all" checked> &nbsp; Tous mes Rendez-vous
+            </label>
+        </div>
+    </div>
+</div>
+<div class="calendar-section">
+    {% if request.user|has_group:"Agent"  %}
+        <div>
+            <h2 style="color: #112A46;font-weight: 700;">Mes Rendez-vous</h2><br />
+        </div>
+    {% else %}
+        <div>
+            <h2 style="color: #112A46;font-weight: 700;">Tous les Rendez-vous</h2>
+            <br />
+        </div>
+    {% endif %}
+
+    <div class="agenda-section" style="padding: 10px" id="sectionRdv">
+        <div class="align-self-center control columns is-multiline">
+            <div class="column is-tree-fifths">
+                <div id="title1">
+                    <h3>Tous les Rendez-vous</h3>
+                </div>
+            </div>
+            <div class="column">
+                <a href="{% url 'administration:dashboard' %}" style="color: #051d38;"> <span><i class="fas fa-redo-alt"></i></span> </a>
+            </div>
+            <div class="column">
+                    <a href="#" id="goDelete" class=" is-danger button is-small">
+                        <span><i class="fa fa-trash" ></i></span>
+                    </a>
+            </div> 
+        </div>
+        {% if rdvs|length_is:"0" %}
+        <h2 class="sub-title" style="color: #051d38;font-weight: 700;">Aucun Rendez-vous trouvé</h2>
+        {% else %}
+        <div class="date-agenda">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td> <strong>Administré</strong> </td>
+                        <td> <strong>Date</strong></td>
+                        <td> <strong>Type</strong></td>
+                        <td> <strong>Etat</strong></td>
+                        <td> <strong></strong> </td>
+                    </tr>
+                </thead>
+                <tbody id="contentTable">
+                    {% for rdv in rdvs %}
+                    <tr>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" id="addDel{{rdv.id}} " onclick="addToDelete({{ rdv.id }})">
+                            </label>
+                        </td>
+                        <td>{{rdv.client.nom}} {{rdv.client.prenom}} <strong>{{rdv.service.nom}}</strong></td>
+                        <td>{{rdv.date_r | date:'d/m/Y'}}</td>
+                        {% if rdv.by_phone %}
+                                <td>Téléphonique</td>
+                        {% else %}
+                                <td>Physique</td>
+                        {% endif %}
+                        <td>
+                            <div class="select is-rounded is-small">
+                                    <select id="Etat{{rdv.id}}" onchange="changeState({{rdv.id}})"  >
+                                        {% if rdv.etat == 'Approuve' %}
+                                            <option value="Approuvé" selected> Approuvé</option> 
+                                        {% else %}
+                                            <option value="Approuvé"> Approuvé</option>
+                                        {% endif %} 
+                                        {% if rdv.etat == 'En attente' %}
+                                            <option value="En attente" selected> En attente</option> 
+                                        {% else %}
+                                            <option value="En attente"> En attente</option>
+                                        {% endif %} 
+                                        {% if rdv.etat == 'Annule' %}
+                                            <option value="Annulé" selected> Annulé</option> 
+                                        {% else %}
+                                            <option value="Annulé"> Annulé</option>
+                                        {% endif %} 
+                                        
+                                    </select>
+                            </div>
+                        </td>
+                        <td> <a href="{% url 'administration:rdv_get_edit' id=rdv.id %}"
+                            class="is-success button is-small" ><span><i
+                                        class="fa fa-eye"></i></span></a> </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+    <br />
+
+    <div>
+        <h2 style="color: #112A46;font-weight: 700;">Mon Agenda</h2>
+        <a href="#"><i class="fas fa-stop " style="color:#e4c935"></i><span style="color: black;">&nbsp; Téléphonique</span></a>
+        <a href="#"><i class="fas fa-stop " style="color:#37f771"></i><span style="color: black;">&nbsp; Physique</span></a>
+    </div>
+    {% if request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" or request.user|has_group:"Administrateur" %}
+    <div class="calendar-container" style="margin-bottom: 20px;background-color: white;">
+        <div class="card">
+            <div class="colums is-full">
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+    
+    {% else %}
+    <div class="calendar-container" style="margin-bottom: 20px">
+        <div class="colums is-full">
+            <div id="evoCalendar"></div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    url = "{% url 'administration:get_rdv_evt' %}"
+    disponibiliteCalendar(url,"RDV")
+
+    $('#goSerachDashboard').click(function () {
+        url = "{% url 'administration:get_rdv_ajax_form' %}"
+        getRdvBySearch(url)
+    })
+    $('#filterDashboard').change(function () {
+        val = $('#filterDashboard').val()
+        changeInput(val)
+    })
+
+    $('#all').click(function () {
+        url1 = "{% url 'administration:get_rdv_ajax' en_attente=4 %}"
+        clickAll(url1,4)
+        $("#evoCalendar").evoCalendar('destroy');
+        disponibiliteCalendar(url1,"RDV")
+    })
+
+    $('#waiting').click(function () {
+        url1 = "{% url 'administration:get_rdv_ajax' en_attente=1 %}"
+        clickAll(url1,1)
+        $("#evoCalendar").evoCalendar('destroy');
+        disponibiliteCalendar(url1,"RDV")
+    })
+
+    $('#validated').click(function () {
+        url1 = "{% url 'administration:get_rdv_ajax' en_attente=0 %}"
+        clickAll(url1,0)
+        $("#evoCalendar").evoCalendar('destroy');
+        disponibiliteCalendar(url1,"RDV")
+    })
+
+    /*$('#reported').click(function () {
+        url1 = "{% url 'administration:get_rdv_ajax' en_attente=2 %}"
+        clickAll(url1,2)
+        $("#evoCalendar").evoCalendar('destroy');
+        disponibiliteCalendar(url1,"RDV")
+    })*/
+
+    $('#canceled').click(function () {
+        url1 = "{% url 'administration:get_rdv_ajax' en_attente=3 %}"
+        clickAll(url1,3)
+        $("#evoCalendar").evoCalendar('destroy');
+        disponibiliteCalendar(url1,"RDV")
+    })
+
+    function changeState(id){
+        ide = "#Etat"+id
+        url = "{% url 'administration:rdv_update' %}"
+        val = $(ide).val()
+        go(id,url,val)
+    }
+     $('#goDelete').click(function(){
+        url = "{% url 'administration:delete_many_rdv' %}"
+        goDelete(url,"DASH")
+    })
+</script>
+
+{% if request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" or request.user|has_group:"Administrateur" %}
+    <script>
+        urls = "{% url 'administration:rdv_dashboard_admin' %}"
+        getRdvAdjoinSuperviseur(urls)
+    </script>
+    <script>
+        $('#all').click(function () {
+            
+            urls = "{% url 'administration:rdv_dashboard_admin' %}"
+            getRdvAdjoinSuperviseur(urls,0)
+        })
+    
+        $('#waiting').click(function () {
+            
+            urls = "{% url 'administration:rdv_dashboard_admin' %}"
+            getRdvAdjoinSuperviseur(urls,1)
+        })
+    
+        $('#validated').click(function () {
+            urls = "{% url 'administration:rdv_dashboard_admin' %}"
+            getRdvAdjoinSuperviseur(urls,2)
+        })
+        $('#canceled').click(function () {
+            urls = "{% url 'administration:rdv_dashboard_admin' %}"
+            getRdvAdjoinSuperviseur(urls,3)
+        })
+    </script>
+{% endif %}
+{% endblock %}

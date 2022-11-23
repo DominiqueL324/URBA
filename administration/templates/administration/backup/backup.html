@@ -1,0 +1,26 @@
+{% extends 'administration/layouts/base.html' %}
+{% load user_tags %}
+{% block content %}
+
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="notification is-danger" role="alert">
+    {{message}}
+</div>
+{% endif %}
+{% if message.tags == 'success' %}
+<div class="notification is-success" role="alert">
+    {{message}}
+</div>
+{% endif %}
+{% endfor %}
+
+<div class="section-stats" style="margin-bottom: 15px;">
+    <div class="card">
+        <p><a href="{% url 'administration:backup_save' %}">Sauvegarder la Base de données</a></p>
+    </div>
+    <div class="card">
+        <p> <a href="{% url 'administration:backup_restor' %}">Restaurer la Base de données</a></p>
+    </div>
+</div>
+{% endblock %}

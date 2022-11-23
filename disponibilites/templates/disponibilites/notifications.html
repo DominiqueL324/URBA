@@ -1,0 +1,201 @@
+{% extends 'rdv/base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="col-md-12">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+            <div class="alert alert-success" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+<div class="header pb-6"  style="background-color: rgb(239, 243, 245);">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h2 class="h2 text-black d-inline-block mb-0">Liste des Notifications</h2>
+          </div>
+        </div>
+        <!-- Card stats -->
+        <div class="row">
+            <div class="form-group col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="phoneRadios" id="all" value="Teloption1" >
+                    <label class="form-check-label" for="phoneRadios1">
+                    Toutes les Notifications
+                    </label>
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="phoneRadios" id="unread" value="Teloption2" >
+                    <label class="form-check-label" for="phoneRadios2">
+                    Notifications non vues
+                    </label>
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="phoneRadios" id="read" value="Teloption2" >
+                    <label class="form-check-label" for="phoneRadios2">
+                    Notifications vues
+                    </label>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid mt--6"  style="background-color: rgb(239, 243, 245);">
+
+        <div class="row" id="update">
+        </div>
+            {% if notifications|length_is:"0" %}
+            <div class="row" id="nothing">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header border-0">
+                          <p class="mt-3 mb-7 text-xl">Désolé Aucune nouvelle notification non vue par vous</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+                <div id="django">
+                  {% for notif in notifications %}
+                    <div class="row">
+                      <div class="col-xl-8">
+                            <div class="card">
+                                {% if notif.type_n == "rdv" %}
+                                    <p class="mt-3 mb-2 px-5 ">Il y a eu <strong>{{notif.objet_n}}</strong> par {{notif.user_name}} ayant un rôle de {{notif.user_type}} le {{notif.date_n|date:'D d M Y'}} à {{notif.heure_n}}
+                                        <br><a href='http://127.0.0.1:8000/admin/rdv/rendezvous/{{notif.rdv.id}}/change/' class="btn-sm btn btn-primary" target="_blank">Détails</a>  <a href="{% url 'disponibilites:notifications_vldt' id=notif.id %}" class="btn-sm btn btn-success">Vue</a></p>
+                                {% else %}
+                                    <p class="mt-3 mb-2 px-5 ">Il y a eu <strong>{{notif.objet_n}}</strong> par {{notif.user_name}} ayant un rôle de {{notif.user_type}} le {{notif.date_n|date:'D d M Y'}} à {{notif.heure_n}}
+                                        <br><a href='http://127.0.0.1:8000/admin/disponibilites/evenement/{{notif.evt.id}}/change/' class="btn-sm btn btn-primary" target="_blank">Détails</a>  <a href="{% url 'disponibilites:notifications_vldt' id=notif.id %}" class="btn-sm btn btn-success">Vue</a></p>
+                                {% endif %}
+                            </div>
+                        </div>  
+                    </div>
+                  {% endfor %}
+                </div>    
+            {% endif %}
+    </div>
+{% endblock %}
+{% block js %}
+<script>
+    $('#all').click(function(){
+        base_url = '127.0.0.1:8000'
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'disponibilites:notifications' vue_chk=1 %}",
+            success: function(response){
+                $('#django').empty()
+                $('#nothing').empty()
+                $('#update').empty()
+                response['notif'].forEach(elt => {
+                    console.log(elt)
+                    if(elt.type_n =="rdv"){
+                        url = "http://"+base_url+"/admin/rdv/rendezvous/"+elt.rdv_id+"/change/"
+                    }else{
+                        url = "http://"+base_url+"/admin/disponibilites/evenement/"+elt.evt_id+"/change/"
+                    }
+                   
+                    if(elt.vue == 0){
+                       str = "<br><a href="+url+" class='btn-sm btn btn-primary' target='_blank'>Détails</a>  <a href='http://"+base_url+"/disponibilites/notifications/valdate/"+elt.id+"' class='btn-sm btn btn-success'>Vue</a>" 
+                    }else{
+                        str = "<br><a href="+url+" class='btn-sm btn btn-primary' target='_blank'>Détails</a>"
+                    }
+
+                    $('#update').append(
+                        "<div class='col-xl-8'>\
+                            <div class='card'>\
+                                <p class='mt-3 mb-2 px-5 '>Il y a eu <strong>"+elt.objet_n+"</strong> par "+elt.user_name+" ayant un rôle de "+elt.user_type+" le "+new Date(elt.date_n).toLocaleDateString()+" à "+new Date('2018-09-22T'+elt.heure_n).toLocaleTimeString()+"\
+                                    "+str+"</p>\
+                            </div>\
+                        </div>"
+                    )
+                });
+            },
+            error: function(response){
+
+            }
+        })
+    })
+
+    $('#unread').click(function(){
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'disponibilites:notifications' vue_chk=3 %}",
+            success: function(response){
+                $('#nothing').empty()
+                $('#update').empty()
+                $('#django').empty()
+                response['notif'].forEach(elt => {
+                    
+                    if(elt.type_n =="rdv"){
+                        url = "http://"+base_url+"/admin/rdv/rendezvous/"+elt.rdv_id+"/change/"
+                    }
+                    if(elt.type_n =="evenement"){
+                        url = "http://"+base_url+"/admin/disponibilites/evenement/"+elt.evt_id+"/change/"
+                    }
+                    
+                    $('#update').append(
+                        "<div class='col-xl-8'>\
+                            <div class='card'>\
+                                <p class='mt-3 mb-2 px-5 '>Il y a eu <strong>"+elt.objet_n+"</strong> par"+elt.user_name+" ayant  un rôle de "+elt.user_type+" le "+new Date(elt.date_n).toLocaleDateString()+" à "+new Date('2018-09-22T'+elt.heure_n).toLocaleTimeString()+"\
+                                    <br><a href="+url+" class='btn-sm btn btn-primary' target='_blank'>Détails</a>  <a href='http://"+base_url+"/disponibilites/notifications/valdate/"+elt.id+"' class='btn-sm btn btn-success'>Vue</a>\
+                                    </p>\
+                            </div>\
+                        </div>"
+                    )
+                });
+            },
+            error: function(response){
+
+            }
+        })
+    })
+
+    $('#read').click(function(){
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'disponibilites:notifications' vue_chk=2 %}",
+            success: function(response){
+                $('#django').empty()
+                $('#nothing').empty()
+                $('#update').empty()
+                response['notif'].forEach(elt => {
+
+                    if(elt.type_n =="rdv"){
+                        url = "http://"+base_url+"/admin/rdv/rendezvous/"+elt.rdv_id+"/change/"
+                    }
+                    if(elt.type_n =="evenement"){
+                        url = "http://"+base_url+"/admin/disponibilites/evenement/"+elt.evt_id+"/change/"
+                    }
+
+                    $('#update').append(
+                        "<div class='col-xl-8'>\
+                            <div class='card'>\
+                                <p class='mt-3 mb-2 px-5 '>Il y a eu <strong>"+elt.objet_n+"</strong> par"+elt.user_name+" ayant un rôle de "+elt.user_type+" le "+new Date(elt.date_n).toLocaleDateString()+" à "+new Date('2018-09-22T'+elt.heure_n).toLocaleTimeString()+"\
+                                    <br><a href="+url+" class='btn-sm btn btn-primary' target='_blank'>Détails</a>\
+                                    </p>\
+                            </div>\
+                        </div>"
+                    )
+                });
+            },
+            error: function(response){
+
+            }
+        })
+    })
+</script>
+{% endblock %}

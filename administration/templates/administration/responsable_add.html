@@ -1,0 +1,100 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block content %}
+<div class="tile is-child is-8">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="notification is-danger" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+            <div class="notification is-success" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+    {% endfor %}
+    <h1 class="title" style="color: #112A46;font-weight: 700;">
+        Ajout d'un responsable
+    </h1>
+
+    <form method="POST" action="{% url 'administration:responsable_add_go' %}">
+        {% csrf_token %}
+        <div class="columns">
+            <div class="column is-4">
+                <label>Nom</label>
+            </div>
+            {{form.nom}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Prénom</label>
+            </div>
+            {{form.prenom}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Téléphone</label>
+            </div>
+            <div class="column">
+                {{form.tel_number}}
+                <p class="help is-danger" id="erreurPhone" style="display: none;">Le Numéro de téléphone doit commencé par 0 et avoir 10 chiffres</p>
+            </div>
+            
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Email</label>
+            </div>
+            {{form.email}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Code couleur Jours spécifiques</label>
+            </div>
+            {{form.couleur_js}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Code couleur Jours de congés</label>
+            </div>
+            {{form.couleur_off}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Identifiant </label>
+            </div>
+            {{form.nom_d_utilisateur}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Nouveau mot de passe</label>
+            </div>
+            {{form.mdp}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Repetez le mot de passe</label>
+            </div>
+            {{form.mdp1}}
+        </div>
+        <div class="columns">
+            <div class="column">
+                <button id="go" class="is-primary button is-small" type="submit"><i class="fas fa-plus"></i></button>
+            </div>
+            <div class="column">
+                <a href="{% url 'administration:responsable_dashboard' %}" class=" is-danger button is-small">Annuler</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'rdv/base.html' %}
+{% load static %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-1">
+
+        </div>
+            <div class="card  col-md-10">
+                <div class="row">
+                    {% if errors %}
+                        <div class="col-md-12">
+                            {% for key, error in errors %}
+                                {% autoescape off %}
+                                    <div class="alert alert-danger">
+                                        {{ error }}
+                                    </div>
+                                {% endautoescape %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5 class="card-header">Création d'un évènement</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <form method="POST" action="{% url 'disponibilites:event_add_go' %}" >
+                            {% csrf_token %}
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label for="nameEvent"><span style="color: red;">*</span> Nom</label>
+                                        <div class="input-group has-validation">
+                                            {{ form.name }}
+                                            <div class="invalid-feedback">
+                                                Le nom est obligatoire
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="dateDebEvent"><span style="color: red;">*</span>Date de debut</label>
+                                        <div class="input-group has-validation">
+                                            {{ form.date_d }}
+                                            <div class="invalid-feedback">
+                                                La date de debut est obligatoire
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="dateEndEvent"><span style="color: red;">*</span>Date de fin</label>
+                                        <div class="input-group has-validation">
+                                            {{ form.date_f }}
+                                            <div class="invalid-feedback">
+                                                La date de debut est obligatoire
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="colorEvent"> Couleur</label>
+                                        <div class="input-group has-validation">
+                                            {{ form.color }}
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label for="descEvent">Description</label>
+                                        <div class="input-group has-validation">
+                                            {{ form.description }}
+                                            <div class="invalid-feedback">
+                                                La description est obligatoire
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer"> 
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <input type="submit" class="btn btn-success" value="Enregistrer">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="reset" class="btn btn-warning" value="Tout effacer">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="#" class="btn btn-danger"> Annuler </a>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

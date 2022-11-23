@@ -1,0 +1,181 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-reboot.min.css' %}">
+    <link href="https://cdn.quilljs.com/1.1.6/quill.snow.css" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="notification is-danger" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+            <div class="notification is-success" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+    {% endfor %}
+    <div class="row" style="margin-left: -60px; margin-right: -60px; background-color: white;border: whitesmoke solid;">
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <h2 style="text-align: center;">Configuration des notifications</h2>
+        </div> 
+        <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
+            <div class="list-group" id="top">
+                <a href="#" id="nrdv" onclick="full('rdv_add')" class="list-group-item list-group-item-action ">
+                  Nouveau Rendez-vous
+                </a>
+                <a href="#" id="ardv" onclick="full('rdv_accept')" class="list-group-item list-group-item-action ">Rendez-vous Approuvée</a>
+                <a href="#" id="eardv" onclick="full('rdv_waiting')" class="list-group-item list-group-item-action">Rendez-vous En attente</a>
+                <a href="#" id="anrdv" onclick="full('rdv_abort')" class="list-group-item list-group-item-action">Rendez-vous Annulé</a>
+                <a href="#" id="nadm" onclick="full('administre_add')" class="list-group-item list-group-item-action ">Création profil Administré</a>
+                <a href="#" id="edam" onclick="full('administre_edit')" class="list-group-item list-group-item-action ">Modification profil Administré</a>
+                <a href="#" id="aag" onclick="full('agent_add')" class="list-group-item list-group-item-action ">Création profil Agent</a>
+                <a href="#" id="eag" onclick="full('agent_edit')" class="list-group-item list-group-item-action ">Modification profil Agent</a>
+                <a href="#" id="asup" onclick="full('sup_add')" class="list-group-item list-group-item-action ">Création profil Superviseur</a>
+                <a href="#" id="esup" onclick="full('sup_edit')" class="list-group-item list-group-item-action ">Modification profil Superviseur</a>
+                <a href="#" id="aadd" onclick="full('adj_add')" class="list-group-item list-group-item-action ">Création profil Adjoint</a>
+                <a href="#" id="eadd" onclick="full('adj_edit')" class="list-group-item list-group-item-action ">Modifcation profil Adjoint</a>
+                <a href="#" id="aadmin" onclick="full('admin_add')" class="list-group-item list-group-item-action ">Création profil Administrateur</a>
+                <a href="#" id="eadmin" onclick="full('admin_edit')" class="list-group-item list-group-item-action ">Modifcation profil Administrateur</a>
+              </div>
+        </div>
+        <div class="col-md-8 col-lg-8 col-sm-8 col-xs-8">
+            <form action="" >
+                {% csrf_token %} 
+                <div class="form-row">
+                    <div class="col-md-12">
+                        <label for="subject">
+                            Titre
+                        </label>
+                        <input class="form-control" type="text" id="subject" name="subject">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="content">
+                            Contenu
+                        </label>
+                        <div id="editor" style="height: 200px" > </div>
+                    </div>
+                </div>
+                <h5>Liste des variables</h5>
+                <div class="form-row">
+                    <div class="col-md-3 col-lg-3 col-sm-3" id="divRdv" style="display: none;">
+                        <select onchange="copySelectedValue('rdv')" name="rdv" id="rdv" class="form-control">
+                            <option value=""> Rendez-vous </option>
+                            <option value="%rdv_date%">%rdv_date%</option>
+                            <option value="%rdv_heure_debut%">%rdv_heure_debut%</option>
+                            <option value="%rdv_heure_fin%">%rdv_heure_fin%</option>
+                            <option value="%rdv_adresse_travaux%">%rdv_adresse_travaux%</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-sm-3" id="divService" style="display: none;">
+                        <select onchange="copySelectedValue('service')" name="service" id="service" class="form-control">
+                            <option value="">Service</option>
+                            <option value="%service_nom%">%service_nom%</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-sm-3" id="divAgent" style="display: none;">
+                        <select onchange="copySelectedValue('agent')" name="agent" id="agent" class="form-control">
+                            <option value="">Agent</option>
+                            <option value="%agent_nom%">%agent_nom%</option>
+                            <option value="%agent_prenom%">%agent_prenom%</option>
+                            <option value="%agent_email%">%agent_email%</option>
+                            <option value="%agent_telephone%">%agent_telephone%</option>
+                            <option value="%agent_login%">%agent_login%</option>
+                            <option value="%agent_mot_de_passe%">%agent_mot_de_passe%</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-sm-3" id="divAdministre" style="display: none;">
+                        <select onchange="copySelectedValue('administre')" name="administre" id="administre" class="form-control">
+                            <option value="">Administré</option>
+                            <option value="%administre_nom%">%administre_nom%</option>
+                            <option value="%administre_prenom%">%administre_prenom%</option>
+                            <option value="%administre_email%">%administre_email%</option>
+                            <option value="%administre_telephone%">%administre_telephone%</option>
+                            <option value="%administre_login%">%administre_login%</option>
+                            <option value="%administre_mot_de_passe%">%administre_mot_de_passe%</option>
+                            <option value="%administre_adresse%">%administre_adresse%</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-sm-3" id="divAdjoint" style="display: none;">
+                        <select onchange="copySelectedValue('adjoint')" name="adjoint" id="adjoint" class="form-control">
+                            <option value="">Adjoint</option>
+                            <option value="%adjoint_nom%">%adjoint_nom%</option>
+                            <option value="%adjoint_prenom%">%adjoint_prenom%</option>
+                            <option value="%adjoint_email%">%adjoint_email%</option>
+                            <option value="%adjoint_telephone%">%adjoint_telephone%</option> 
+                            <option value="%adjoint_login%">%adjoint_login%</option>
+                            <option value="%adjoint_mot_de_passe%">%adjoint_mot_de_passe%</option>
+                            <option value="%adjoint_role%">%adjoint_role%</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-sm-3" id="divSuperviseur" style="display: none;">
+                        <select onchange="copySelectedValue('superviseur')" name="superviseur" id="superviseur" class="form-control">
+                            <option value="">Superviseur</option>
+                            <option value="%superviseur_nom%">%superviseur_nom%</option>
+                            <option value="%superviseur_prenom%">%superviseur_prenom%</option>
+                            <option value="%superviseur_email%">%superviseur_email%</option>
+                            <option value="%superviseur_telephone%">%superviseur_telephone%</option>
+                            <option value="%superviseur_login%">%superviseur_login%</option>
+                            <option value="%superviseur_mot_de_passe%">%superviseur_mot_de_passe%</option>
+                            <option value="%superviseur_role%">%superviseur_role%</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-sm-3" id="divAdministrateur" style="display: none;">
+                        <select onchange="copySelectedValue('administrateur')" name="administrateur" id="administrateur" class="form-control">
+                            <option value="">Administrateur</option>
+                            <option value="%administrateur_nom%">%administrateur_nom%</option>
+                            <option value="%administrateur_prenom%">%administrateur_prenom%</option>
+                            <option value="%administrateur_email%">%administrateur_email%</option>
+                            <option value="%administrateur_telephone%">%administrateur_telephone%</option>
+                            <option value="%administrateur_login%">%administrateur_login%</option>
+                            <option value="%administrateur_mot_de_passe%">%administrateur_mot_de_passe%</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="form-row">
+                    <div id="copy" style="display: none;" class="alert alert-success col-md-12" role="alert">
+                        Variable copiée
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div id="warning1" style="display: none;" class="alert alert-danger col-md-12" role="alert">
+                        Attention tous les champs sont obligatoires
+                    </div>
+                </div>
+                <br>
+            </form>
+            <div class="form-row">
+                <div class="col-md-3">
+                    <button class="btn btn-primary" id="go1"> Enregistrer</button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-danger"> Annuler</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="https://cdn.quilljs.com/1.1.6/quill.js"></script> 
+<script src="{% static 'js/notifications.js' %}"></script>
+<script>
+    $( document ).ready(function() {
+        var quill = new Quill('#editor', {
+        theme: 'snow'
+        });
+    });
+    $('#go1').on('click',function(e){
+        url = '{% url "administration:notifications_add" %}'
+        goSave(url)
+    })
+</script>
+{% endblock %}

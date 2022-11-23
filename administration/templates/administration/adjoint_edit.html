@@ -1,0 +1,124 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block content %}
+<div class="tile is-child is-8">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="notification is-danger" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+            <div class="notification is-success" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    {% for error in errors %}
+        <div class="notification is-danger" role="alert">
+            {{error}}
+        </div>
+    {% endfor %}
+    <h1 id="titreP" class="title" style="color: #112A46;font-weight: 350;">
+        Edition du profil de {{adjoint.user.first_name}} {{adjoint.user.last_name}}
+    </h1>
+  
+    <form method="POST" action="{% url 'administration:adjoint_edit' id=adjoint.id %}">
+        {% csrf_token %}
+        <div class="columns">
+            <div class="column is-4">
+                <label>Nom</label>
+            </div>
+            {{form.nom}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Prénom</label>
+            </div>
+            {{form.prenom}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Téléphone</label>
+            </div>
+            <div class="column">
+                {{form.tel_number}}
+                <p class="help is-danger" id="erreurPhone" style="display: none;">Le Numéro de téléphone doit commencé par 0 et avoir 10 chiffres</p>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Email</label>
+            </div>
+            {{form.email}}
+        </div>
+
+        <div class="columns" id="rolediv">
+            <div class="column is-4">
+                <label>Rôle</label>
+            </div>
+            {{form.role}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Identifiant </label>
+            </div>
+            {{form.nom_d_utilisateur}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Nouveau mot de passe</label>
+            </div>
+            {{form.mdp}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Repetez le mot de passe</label>
+            </div>
+            {{form.mdp1}}
+        </div>
+        <div class="columns">
+            <div class="column">
+                <button id="go" class="is-primary button is-small" type="submit"><i class="fas fa-edit"></i></button>
+            </div>
+            <div class="column">
+                <a id="deleteAdj" class=" is-danger button is-small"><span><i class="fas fa-trash"></i></span></a>
+            </div>
+            {% if request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+            <div class="column">
+                <a href="{% url 'administration:dashboard' %}" class=" is-danger button is-small">Annuler</a>
+            </div>
+            {% else %}
+            <div class="column">
+                <a href="{% url 'administration:adjoint_dashboard' %}" class=" is-danger button is-small">Annuler</a>
+            </div>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $('#deleteAdj').click(function () {
+        url = "{% url 'administration:adjoint_delete'  id=adjoint.id %}"
+        if (confirm('Voulez vous vraiment supprimer??')) {
+            DeleteAdmin(url,"ADJ")
+        } else {
+        }
+    })
+</script>
+    {% if request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+        <script>
+            $('#titreP').text('Edition de mon profil')
+            $('#rolediv').css('display','none')
+        </script>    
+    {% endif %}
+{% endblock %}

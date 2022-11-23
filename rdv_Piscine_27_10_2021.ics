@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:rdv240@import.com
+DTSTAMP:20211027T103058
+ORGANIZER;CN=AdministréNom2 AdministréPrenom2:MAILTO:mail.saint-medard-en-jalles.fr
+DTSTART:20211027T103058
+DTEND:20211027T110058
+SUMMARY:Rendez-vous physique avec Bachelier Valérie au service Piscine
+DESCRIPTION:Vous avez une demande rendez-vous  physique au service Piscine avec AdministréNom2 AdministréPrenom2 \n le mail de réponse est: ne-pas-repondre@saint-medard-en-jalles.fr
+END:VEVENT
+END:VCALENDAR

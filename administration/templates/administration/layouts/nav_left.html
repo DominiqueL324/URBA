@@ -1,0 +1,103 @@
+{% load static %}
+{% load user_tags %}
+<section class="side-bar tablet-side-bar" id="sideMenu">
+    <div class="side-bar-head">
+        <div class="img-logo" style="padding: 4px">
+              <img src="{% static 'images/logo.png' %}" style="height: 100%; width: 50%;margin-left: 50%; transform: translate(-50%);"> 
+        </div>
+        <p class="has-text-centered has-text-weight-semibold is-size-6" style="margin-top: 0px;">Service Urbanisme | Version 2.0</p>     
+   </div>
+    <div class="nav-link-section" >
+        <nav class="side-menu-nav">
+            <ul class="side-menu">
+                <li>
+                    <a href="{% url 'administration:dashboard' %}"><span class="menu_icon"><i
+                                class='bx bxs-category'></i></span> <span class="menu_text">Tableau de bord</span></a>
+                </li>
+                <li>
+                    <a href="{% url 'administration:rdv_dashboard' %}"><span class="menu_icon"><i class="fa fa-id-card"></i></span> <span class="menu_text">Rendez-vous </span></a>
+                    
+                </li>
+                {% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+                <li>
+                    <a href="{% url 'administration:administre_dashboard' %}"><span class="menu_icon"><i
+                                class="fas fa-users"></i></span> <span class="menu_text">Administrés</span></a>
+                    
+                </li>
+                {% else %}
+                <li>
+                    <a href="{% url 'administration:administre_dashboard' %}"><span class="menu_icon">
+
+                            <i class="fas fa-users"></i>
+                            </span> 
+                            <span class="menu_text">
+                                Administrés
+                            </span>
+                        </span>
+                    </a>
+                    
+                </li>
+                {% endif %}
+                <li>
+                    <a href="{% url 'administration:joursSpecifiques_dashboard' %}"><span class="menu_icon"><i class="fas fa-calendar-day"></i></span> <span
+                            class="menu_text">Jours spécifiques </span></a>
+                    <a href="#"></a>
+                </li>
+                <li>
+                    <a href="{% url 'administration:conges' %}"><span class="menu_icon"><i
+                                class="fas fa-calendar"></i></span> <span class="menu_text">Jour Off</span></a>
+                    
+                </li>
+                {% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+                <li>
+                    <a href="{% url 'administration:agenda' %}"><span class="menu_icon"><i class="fas fa-calendar-alt"></i></span> <span
+                            class="menu_text">Agenda </span></a>
+                    <a href="#"></a>
+                </li>
+                <li>
+                    <a href="{% url 'administration:responsable_dashboard' %}"><span class="menu_icon"><i class="fas fa-user"></i></span> <span
+                            class="menu_text">Responsables</span></a>
+                    
+
+                </li>
+                <li>
+                    <a href="{% url 'administration:service_dashboard' %}"><span class="menu_icon"><i class="fas fa-wallet"></i></span> <span
+                            class="menu_text">Services</span></a>
+                    
+                </li>
+                {% endif %}
+                {% if request.user|has_group:"Administrateur" %}
+                <li>
+                    <a href="{% url 'administration:notifications' %}"><span class="menu_icon"><i class="fas fa-bell"></i></span> <span
+                            class="menu_text">Notifications</span></a>
+                    <a href="#"></a>
+                </li>
+                <li>
+                    <a href="{% url 'administration:adjoint_dashboard' %}"><span class="menu_icon"><i class="fas fa-user-circle"></i></span> <span
+                            class="menu_text">Adjoint/Superviseur </span></a>
+                    <a href="#"></a>
+                </li>
+                {% endif %}
+                {% if request.user|has_group:"Administrateur" %}
+                <li>
+                    <a href="{% url 'administration:administrateur_dashboard' %}"><span class="menu_icon"><i class="fas fa-user-shield"></i></span> 
+                        <span class="menu_text">Administrateur</span></a>
+                    <a href="#"></a>
+                </li>
+                <li>
+                    <a href="{% url 'administration:backup' %}"><span class="menu_icon"><i class="fas fa-hdd"></i></span> 
+                        <span class="menu_text">Sauvegarde et restauration</span></a>
+                    <a href="#"></a>
+                </li>
+                {% endif %}
+                {% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+                <li>
+                    <a href="{% url 'administration:get_in_excel' %}"><span class="menu_icon"><i class="fas fa-bell"></i></span> <span
+                            class="menu_text">Importer/Exporter </span></a>
+                    
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</section>

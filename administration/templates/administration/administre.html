@@ -1,0 +1,116 @@
+{% extends 'administration/layouts/base.html' %}
+{% load user_tags %}
+
+{% block select %}
+<form class="searh-contianer">
+    <div class="w-">
+        <div class="select is-small is-fullwidth">
+            <select id="filterAdministre">
+                <option value="">critère de recherche</option>
+                <option value="email">Email</option>
+                <option value="nom">Nom</option>
+            </select>
+        </div>
+    </div>
+    <div class="w-" id="dataSearchFieldAdministre">
+    </div>
+    <div class="w-">
+        <a href="#" class="w-100 button is-small is-primary" id="goSerachAdministre">Rechercher</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block content %}
+<h2 class="title" style="color: #112A46;font-weight: 700;">Administrés</h2>
+{% for message in messages %}
+    {% if message.tags == 'error' %}
+        <div class="notification is-danger" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+        <div class="notification is-success" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+{% endfor %}
+
+<div class="calendar-section">
+    <div class="calendar-container" style="margin-bottom: 20px">
+        <div class="agenda-section" style="padding: 10px" id="sectionRdv">
+            <div class="align-self-center control columns is-multiline">
+                <div class="column is-tree-fifths">
+                    <div id="title2">
+                        <h3>Tous les Administrés</h3>
+                    </div>
+                </div>
+                <div class="column">
+                    <a href="{% url 'administration:administre_dashboard' %}" style="color: #051d38;"> <span><i class="fas fa-redo-alt"></i></span> </a>
+                </div>
+                <div class="column">
+                    <a href="{% url 'administration:administre_add' %}" class=" is-primary button is-small">
+                        <span><i class="fa fa-plus"></i></span>
+                    </a>                
+                </div>
+                <div class="column">
+                    <a href="#" id="goDelete" class=" is-danger button is-small">
+                        <span><i class="fa fa-trash" ></i></span>
+                    </a>
+                </div> 
+
+            </div>
+            {% if administres|length_is:"0" %}
+            <h2 class="sub-title" style="color: #051d38;font-weight: 700;">Aucun Adminitré pour vous</h2>
+            {% else %}
+            <div class="date-agenda">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td> <strong>Nom</strong></td>
+                            <td> <strong>Prénom</strong></td>
+                            <td> <strong>Email</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody id="contentTable2">
+                        {% for administre in administres %}
+                        <tr>
+                            <td>
+                                <label class="checkbox">
+                                    <input type="checkbox" id="addDel{{administre.id}} " onclick="addToDelete({{ administre.id }})">
+                                </label>
+                            </td>
+                            <td>{{administre.nom}}  </td>
+                            <td>{{administre.prenom}}  </td>
+                            <td> <strong>{{administre.email}}</strong> </td>
+                            <td> 
+                                <a href="{% url 'administration:administre_get_edit' id=administre.id %}" class="is-success button is-small" >
+                                    <span><i class="fa fa-eye"></i></span>
+                                </a> 
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $('#goSerachAdministre').click(function () {
+        url = "{% url 'administration:get_administre_ajax' %}"
+        getAdministreBySearch(url)
+    })
+    $('#filterAdministre').change(function () {
+        val = $('#filterAdministre').val()
+        changeInputAdministre(val)
+    })
+    $('#goDelete').click(function(){
+        url = "{% url 'administration:delete_many_rdv' %}"
+        goDelete(url,"ADMNS")
+    })
+</script>
+{% endblock %}

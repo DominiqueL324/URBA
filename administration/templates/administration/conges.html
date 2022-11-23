@@ -1,0 +1,119 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block content %}
+<div class="tile is-child is-full">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="notification is-danger" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+            <div class="notification is-success" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+    {% endfor %}
+    {% if request.user|has_group:"Agent" %}
+    <h2 class="title" style="color: #112A46;font-weight: 700;">Mes congés</h2>
+    <a href="{% url 'administration:conges_add' %}" class="is-primary button is-small"><i class="fas fa-plus "></i></a>
+    {% else %}
+    <h2 class="title" style="color: #112A46;font-weight: 700;">Congés de tous les agents</h2>
+    <a href="{% url 'administration:conges_add' %}" class="is-primary button is-small"><i class="fas fa-plus "></i></a>
+    <select name="agentS" id="agentS" class="input is-big">
+        <option value="0">Tous les agents</option>
+        {% for agent in agents %}
+        <option value="{{agent.id}}" style="color:{{agent.couleur_conge}};">{{agent.user.last_name}}  {{agent.user.first_name}} 
+        </option>
+        {% endfor %}
+    </select>
+    {% endif %}
+    <div class="calendar-container" style="margin-bottom: 20px">
+
+        <div class="calendar-container" style="margin-bottom: 20px">
+            <div class="agenda-section" style="padding: 10px" id="sectionRdv">
+                <div class="align-self-center control columns is-multiline">
+                    <div class="column is-tree-fifths">
+                        <div id="title1">
+                            <h3>Jours off</h3>
+                        </div> 
+                    </div>
+                   
+                    <div class="column">
+                        <a href="{% url 'administration:conges' %}" style="color: #051d38;"> <span><i class="fas fa-redo-alt"></i></span> </a>
+                    </div>
+                    <!--
+                     <div class="column">
+                        <a href="#" id="goDelete" class=" is-danger button is-small">
+                            <span><i class="fa fa-trash" ></i></span>
+                        </a>
+                    </div> 
+                -->
+                </div>
+                {% if rdvs|length_is:"0" %}
+                <h2 class="sub-title" style="color: #051d38;font-weight: 700;">Aucun Rendez-vous trouvé</h2>
+                {% else %}
+                <div class="date-agenda">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td></td> 
+                                <td> <strong>Intitulé</strong></td>
+                                <td> <strong>Date début</strong></td>
+                                <td> <strong>Date fin</strong></td>
+                                <td> <strong>Responsable</strong></td>
+                                <td> <strong>Description</strong> </td>
+                            </tr>
+                        </thead>
+                        <tbody id="contentTable1">
+                            {% for conge in conges %}
+                            <tr>
+                                <td>
+                                    <label class="checkbox">
+                                        <input type="checkbox" id="addDel{{conge.id}} " onclick="addToDelete({{ conge.id }})">
+                                    </label>
+                                </td>
+                                <td>{{conge.name}}  </td>
+                                <td>{{conge.date_d | date:'d/m/Y'}}</td>
+                                <td>{{conge.date_f | date:'d/m/Y'}}</td>
+                                <td>{{conge.responsable.user.last_name }} {{conge.responsable.user.first_name }}</td>
+                                <td>{{conge.descriptions}}</td>
+                                <td> <a href="{% url 'administration:conges_edit' id=conge.id %}"
+                                        class="is-success button is-small"><span><i class="fa fa-eye"></i></span></a> </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                
+            </div>
+        </div>
+    </div>
+    <div class="calendar-container" style="margin-bottom: 20px;background-color: white;">
+        <div class="colums is-full">
+            <div id="evoCalendar" style="height: 640px;background-color: white;"></div>
+    </div>
+</div>
+</div>
+{% endblock %}
+{% block js %}
+    <script>
+       url = "{% url 'disponibilites:event_get' %}"
+       disponibiliteCalendar(url,"Conges")
+       $("#agentS").on('change',function(){
+            va = $('#agentS').val()
+            url = "/disponibilites/conge/user/"+va
+            $("#evoCalendar").evoCalendar('destroy');
+            disponibiliteCalendar(url,"Conges")
+       })
+       $('#delete1').click(function (e) {
+        if (confirm('Voulez vous vraiment supprimer ce congé??')) {
+            e.stopPropagation()
+        } else {
+        }
+    })
+    </script>
+{% endblock %}
+

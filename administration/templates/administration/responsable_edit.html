@@ -1,0 +1,193 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block content %}
+<div class="tile is-child is-8">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="notification is-danger" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+            <div class="notification is-success" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+    {% endfor %}
+    <h1 class="title"  id="titreP" style="color: #112A46;font-weight: 350;">
+        Edition du profil de  {{ agent.user.first_name }}  {{ agent.user.last_name }} 
+        {% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+            {% if agent.user|has_group:"Administrateur" %}
+                <span><strong>(Administrateur)</strong></span>
+            {% elif agent.user|has_group:"Adjoint" %}
+                <span><strong>(Adjoint)</strong></span>
+            {% elif agent.user|has_group:"Superviseur" %}
+                <span><strong>(Superviseur)</strong></span>
+            {% else %}
+                <span><strong>(Agent)</strong></span>
+            {% endif %}
+        {% endif %}
+    </h1>
+    <div class="columns is-12">
+        <div class="column is-12">
+            <form method="POST" action="{% url 'administration:responsable_edit' id=agent.id %}">
+                {% csrf_token %}
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Nom</label>
+                    </div>
+                    {{form.nom}}
+                </div>
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Prénom</label>
+                    </div>
+                    {{form.prenom}}
+                </div>
+        
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Téléphone</label>
+                    </div>
+                    <div class="column">
+                        {{form.tel_number}}
+                        <p class="help is-danger" id="erreurPhone" style="display: none;">Le Numéro de téléphone doit commencé par 0 et avoir 10 chiffres</p>
+                    </div>
+                </div>
+        
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Email</label>
+                    </div>
+                    {{form.email}}
+                </div>
+                {% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Code couleur Jours spécifiques</label>
+                    </div>
+                    {{form.couleur_js}}
+                </div>
+        
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Code couleur Jours de congés</label>
+                    </div>
+                    {{form.couleur_off}}
+                </div>
+                {% endif %}
+        
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Identifiant </label>
+                    </div>
+                    {{form.nom_d_utilisateur}}
+                </div>
+        
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Nouveau mot de passe</label>
+                    </div>
+                    {{form.mdp}}
+                </div>
+        
+                <div class="columns">
+                    <div class="column is-4">
+                        <label>Repetez le mot de passe</label>
+                    </div>
+                    {{form.mdp1}}
+                </div>
+                {% if request.user|has_group:"Agent" %}
+                    <div class="columns">
+                        <div class="column is-4">
+                            <label>Nom d'utilisateur Zimbra </label>
+                        </div>
+                        {{form.nom_d_utilisateur_zimbra}}
+                    </div>
+                    <div class="columns">
+                        <div class="column is-4">
+                            <label>mot de passe Zimbra</label>
+                        </div>
+                        {{form.mdpZ}}
+                    </div>
+                    
+                {% endif %}
+                <div class="columns">
+                    <div class="column">
+                        <button id="go" class="is-primary button is-small" type="submit"><span><i class="fas fa-edit"></i></span></button>
+                    </div>
+                    {% if agent.user|has_group:"Administrateur" %}
+                       <!--<div class="column">
+                            <a target="_blank" href="/admin/auth/user/{{agent.user.id }}/change/" class=" is-primary button is-small">Modifier rôle</a>
+                        </div>--> 
+                    {% endif %}
+                    <div class="column">
+                        <a id="delete2" class=" is-danger button is-small"><span><i class="fas fa-trash"></i></span></a>
+                    </div>
+                    {% if request.user|has_group:"Administrateur" or request.user|has_group:"Superviseur" or request.user|has_group:"Adjoint" %}
+                        <div class="column">
+                            <a href="{% url 'administration:responsable_dashboard' %}" class=" is-danger button is-small">Annuler</a>
+                        </div>
+                    {% else %}
+                        <div class="column">
+                            <a href="{% url 'administration:dashboard' %}" class=" is-danger button is-small">Annuler
+
+                            </a>                        
+                        </div>
+                    {% endif %}
+                    
+                </div>
+            </form>
+        </div>
+
+        <div class="column is-7">
+            
+            <div class="box">
+                {% if services|length_is:"0" %}
+                <h2 class="sub-title" style="color: #051d38;font-weight: 700;">Aucun service pour ce responsable</h2>
+                {% else %}
+                <div class="table-container" style="width: inherit; position: relative;">
+                    <table class="table" style="overflow: scroll;">
+                        <thead>
+                            <tr>
+                                <th><strong>SERVICES EN CHARGES</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in services %}
+                            <tr>
+                                <td>{{ service.nom}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $('#delete2').click(function () {
+        url = "{% url 'administration:responsable_delete'  id=agent.id %}"
+        if (confirm('Voulez vous vraiment supprimer ce Rendez-vous??')) {
+            Delete(url,"responsable")
+        } else {
+        }
+    })
+    
+</script>
+{% if request.user|has_group:"Agent" or request.user|has_group:"Superviseur" or request.user|has_group:"Administrateur" %}
+        <script>
+            console.log('ok')
+        </script> 
+{% else %}
+<script>
+    $('#titreP').text('Edition de mon profil')
+</script> 
+{% endif %}
+{% endblock %}

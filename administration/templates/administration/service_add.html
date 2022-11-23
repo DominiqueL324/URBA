@@ -1,0 +1,71 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% block content %}
+<div class="tile is-child is-8">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <div class="notification is-success" role="alert">
+            {{message}}
+        </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+        <div class="notification is-success" role="alert">
+            {{message}}
+        </div>
+        {% endif %}
+    {% endfor %}
+    <h2 class="title" style="color: #112A46;font-weight: 700;">Ajout d'un service</h2><br>
+    <form method="POST" action="{% url 'administration:service_add' %}">
+        {% csrf_token %}
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Nom du service</label>
+            </div>
+            <div class="column">
+                {{form.nom}}
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Durée des rendez-vous (min)</label>
+            </div>
+            <div class="column">
+                {{form.duree_rdv}}
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Responsables de ce service</label>
+            </div>
+
+            <div class="column">
+                <div class="select ">
+                    {{form.responsable}}
+                </div>
+            </div>
+        </div>
+        <br><br>
+        <div class="columns">
+            <div class="column">
+                <button id="save" class="is-primary button is-small" type="submit"><i class="fa fa-plus"></i></button>
+            </div>
+            <div class="column">
+                <a href="#" class="is-danger button is-small">Annuler</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    url = "{% url 'rdv:get_creneau_ajax' %}"
+    $('#inputDate').change(function () {
+        val = $('#inputDate').val()
+        dateChangeEvent(val, url)
+    })
+</script>
+{% endblock %}

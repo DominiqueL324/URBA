@@ -1,0 +1,91 @@
+{% extends 'administration/layouts/base.html' %}
+
+{% block content %}
+
+{% for message in messages %}
+    {% if message.tags == 'error' %}
+        <div class="notification is-danger" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+        <div class="notification is-success" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+{% endfor %}
+
+<div style="margin-bottom: 15px;">
+    <h2 class="title" style="color: #112A46;font-weight: 700;">Gestion des services et responsables de services</h2>
+</div>
+<div class="box">
+    {% if services|length_is:"0" %}
+        <h2 class="sub-title" style="color: #051d38;font-weight: 700;">Aucun Service trouvé
+            <span><a href="{% url 'administration:service_add_go' %}"><i class="fa fa-plus"></i></a></span>
+        </h2> 
+    {% else %}
+    <div  class="control columns is-multiline" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <span><a href="{% url 'administration:service_add_go' %}"><i class="fa fa-plus"></i></a></span>
+        <div class="control has-icons-left has-icons-right column">
+            <input class="input is-small is-rounded" type="text" placeholder="Rechercher  ">
+            <span class="icon is-small is-right">
+                <i class="fas fa-search"></i>
+            </span>
+            <span class="icon is-small is-right">
+                <i class="fas fa-check"></i>
+            </span>
+        </div>
+        <div class="column">
+            <a href="#" id="goDelete" class=" is-danger button is-small">
+                <span><i class="fa fa-trash" ></i></span>
+            </a>
+        </div> 
+    </div>
+    <div class="table-container" style="overflow: scroll;width: inherit; position: relative;">
+        <table class="table" style="overflow: scroll;min-width: 600px;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>NOM </th>
+                    <th>DETAILS</th>
+
+                </tr>
+            </thead>
+
+            <tbody id="contentTableResponsable">
+                {% for service  in services %}
+                <tr>
+                    <td>
+                        <label class="checkbox">
+                            <input type="checkbox" id="addDel{{service.id}} " onclick="addToDelete({{ service.id }})">
+                        </label>
+                    </td>
+                    <td>{{ service.nom }}</td>
+                    <td><a href="{% url 'administration:service_get_edit' id=service.id %}"
+                        class="is-success button is-small"><span><i class="fa fa-eye"></i></span></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    
+    $('#goSerachResponsable').click(function () {
+        url = "{% url 'administration:get_responsable_ajax' %}"
+        getResponsableBySearch(url)
+    })
+    $('#filterResponsable').change(function () {
+        val = $('#filterResponsable').val()
+        changeInputResponsable(val)
+    })
+    $('#goDelete').click(function(){
+        url = "{% url 'administration:delete_many_rdv' %}"
+        goDelete(url,"SERVICE")
+    })
+</script>
+{% endblock %}

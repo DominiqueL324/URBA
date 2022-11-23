@@ -1,0 +1,247 @@
+{% extends 'administre/layout/base.html' %}
+{% load static %}
+{% block content %}
+<div class="header pb-6"  style="background-color: rgb(239, 243, 245);">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'warning' %}
+                        <div class="alert alert-warning" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="alert ">
+            </div>
+        </div>
+        <div class=" mt--16 mb--1"  style="background-color: rgb(239, 243, 245);">
+            <div class="row">
+                <div class="card  col-md-12">
+                    
+                    {% if errors %}
+                        <div>
+                            {% for key, error in errors %}
+                                {% autoescape off %}
+                                    <div class="alert alert-danger">
+                                        {{ error }}
+                                    </div>
+                                {% endautoescape %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="card-header">Modification du Rendez-vous pour {{rdv.service.nom}}  avec {{rdv.responsable.user.last_name}}  {{rdv.responsable.user.first_name}}  <div style="color: red;" id="dateError"></div></h5>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                          
+                            <div class="tab-content" style="padding-top: 2%;">
+                                <form id="formulaire" action="{% url 'administre:edit_rdv_go' id=rdv.id %}" method="POST" enctype="multipart/form-data">
+                                    <div class="row">
+                                        {% csrf_token %}
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12 col-sm-12">
+                                                    <label for="">Objet</label>
+                                                    {{ form.service}}
+                                                </div>
+                                            </div>
+                                            <input type="hidden" value="{{rdv.id}}" id="rdv">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6 col-sm-6">
+                                                    Rendez-vous téléphonique &nbsp;
+                                                    {{ form.phone}} 
+                                                </div>
+                                                <div class="form-group col-md-6 col-sm-6">
+                                                    Déjà venu au service urbanisme?&nbsp;
+                                                    {{ form.urbanisme}} 
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6 col-sm-6">
+                                                    <label for="inputDate">Date</label>
+                                                    {{ form.date }}
+                                                </div>
+                                                <div class="col-md-6 col-sm-6" id="agentL" style="display: none;">
+                                                    <div class="form-group col-md-12">
+                                                        <label for="">Agent</label>
+                                                        <input class="form-control" name="agent" id="agentS">
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="" id="tmpsService"> 
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12 col-sm-12">
+                                                    <div id="creneau"></div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                
+                                                <div class="form-group col-md-6 col-sm-6">
+                                                    <label for="inputDate">Heure de début</label>
+                                                    {{ form.heure }}
+                                                </div>
+                                                <div class="form-group col-md-6 col-sm-6">
+                                                    <label for="inputDate">Heure de fin</label>
+                                                    {{ form.heureF }}
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6 col-sm-6">
+                                                    <label for="inputDate">Nombre de personnes</label>
+                                                    {{ form.nombre_person }}
+                                                </div>
+
+                                                <div class="form-group col-md-6 col-sm-6">
+                                                    <label for="">Fichiers (2 Mo pdf,doc,docx,JPG)</label>
+                                                    {{ form.fichier }}
+                                                </div>
+                                                
+                                            </div>
+                                            <h4>Adresse(s) de Travaux</h4>
+                                            <hr>
+                                            <div class="form-row">
+                                                <div class="col-md-6 col-lg-6 col-sm-6">
+                                                    <label for="jour">Liste des adresse(s) de Travaux</label>
+                                                    <select class="form-control form-select col-md-12" id="adresseT">
+
+                                                        {% for rdv in adresses %}
+                                                            <option value="{{rdv.adresseTarvaux}}">{{rdv.adresseTarvaux}}</option>
+                                                        {% endfor %}
+                                                       
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-6 col-lg-6 col-sm-6">
+                                                    <label for="inputAdresseTravaux"><span style="color: red;">*</span> Nouvelle adresse de Travaux</label>
+                                                    <div class="input-group has-validation">
+                                                        {{ form.adresseTravaux }}
+                                                        <div class="invalid-feedback">
+                                                            L'Adresse(s) de travaux est obligatoire
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            
+                                    </div> 
+                                    <div class="col-md-6 col-sm-12">
+                                        <div id='calendar'></div>
+                                    </div>
+                                </div>
+                                 <div class="form-row">
+                                    <div class="ol-md-12 col-sm-12">
+                                        <h4 class="text-muted">Liste des fichiers du RDV </h4> 
+                                        <ul class="list-group" id="liste">
+                                            {% for fichier in  fl %}                                                   
+                                                <li class="list-group-item"><a onclick="Delete({{ fichier.id }})"><i class="far fa-trash-alt"></i>   </a>
+                                                    <a href="{{ fichier.fichier.url }}">{{ fichier.fichier }}</a>
+                                                </li>
+                                            {% endfor %}
+                                          
+                                          
+                                        </ul>
+                                      </div>
+                                </div>
+                                <div class=" form-row">
+                                    <div class="col-md-4 col-12 col-sm-4">
+                                        <input type="submit" class="btn btn-primary" value="Modifier">
+                                    </div>
+                                    <div class="col-md-4 col-12 col-sm-4">
+                                        <a href="{% url 'administre:dashboard' %}" class="btn btn-danger">Retour</a>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12">
+                                        <div id="warning1"  style="display: none;" >
+                                           <p style="color: red;"><strong>Attentionn</strong> Pas de RDV avant 08h et après 17h</p> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12">
+                                        <div id="warning2"  style="display: none;" >
+                                           <p style="color: red;"><strong>Attentionn</strong> Pas de RDV durant les heures de pause</p> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12">
+                                        <div id="warning3"  style="display: none;" >
+                                           <p style="color: red;"><strong>Attentionn</strong> Un RDV téléphonique est déjà en cours durant ce créneau choisissez un autre</p> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12">
+                                        <div id="warning4"  style="display: none;" >
+                                           <p style="color: red;"><strong>Attentionn</strong> Un RDV physique est déjà en cours durant ce créneau choisissez un autre</p> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </form>              
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="{% static 'js/ownscripts.js' %}"></script>
+<script>
+    
+    url = "{% url 'disponibilites:event_get_for_rdv' %}"
+    service = "{{ rdv.service.id}}"
+    date_r = "{{ rdv.date_r|date:'d/m/Y' }}"
+    date_r1 = "{{ rdv.date_r|date:'Y-m-d' }}"
+    loadEvent(url,service,date_r,date_r1)
+    $('.fc-timegrid-axis-cushion').css('display','none')
+    $('#id_urbanisme_0').on('click',function(e){
+        $('#agentS').css('display','inline')
+    })
+
+    $('#inputDate').on('change',function(e){
+        service = "{{ rdv.service.id}}"
+        date_r =  $('#inputDate').val()
+        date_r1 = $('#inputDate').val()
+        d = date_r.split('-')
+        date_r = d[2]+"/"+d[1]+"/"+d[0]
+        loadEvent(url,service,date_r,date_r1)
+        $('.fc-timegrid-axis-cushion').css('display','none')
+    })
+    $('.fc-timegrid-axis-cushion').css('display','none')
+
+    function Delete(id) {
+        if (confirm('Voulez vous vraiment supprimer ce Fichier??')) {
+            url = "{% url 'administre:delete_file' %}"
+            idr = "{{ rdv.id }}"
+            removeFile(id,idr,url)
+        } else {
+        }
+    }
+
+    
+
+</script>
+
+{% endblock %} 
+    

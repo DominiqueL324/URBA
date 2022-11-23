@@ -1,0 +1,132 @@
+{% load static %}
+{% load user_tags %}
+
+<nav class="navbar navbar-top navbar-expand navbar-dark border-bottom" style="background-color: rgb(239, 243, 245);">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Search form -->
+        <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main">
+          <div class="form-group mb-0">
+            <div class="input-group input-group-alternative input-group-merge">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+              </div>
+              <input class="form-control" placeholder="Search" type="text">
+            </div>
+          </div>
+          <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </form>
+        <!-- Navbar links -->
+        <ul class="navbar-nav align-items-center  ml-md-auto ">
+          <li class="nav-item d-xl-none">
+            <!-- Sidenav toggler -->
+            <div class="pr-3 sidenav-toggler sidenav-toggler-dark" data-action="sidenav-pin" data-target="#sidenav-main">
+              <div class="sidenav-toggler-inner">
+                <i class="sidenav-toggler-line"></i>
+                <i class="sidenav-toggler-line"></i>
+                <i class="sidenav-toggler-line"></i>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item d-sm-none">
+            <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">
+              <i class="ni ni-zoom-split-in text-black"> test</i>
+            </a>
+          </li>
+          {% if request.user|has_group:"Administrateur" %}
+          <li class="nav-item dropdown">
+            <div id="cloche">
+                <div class="dropdown-menu dropdown-menu-xl  dropdown-menu-right  py-0 overflow-hidden">
+                  <!-- Dropdown header -->
+                  <div class="px-1 py-1" id="notif_head">
+                    
+                  </div>
+                  <!-- List group -->
+                  <div class="list-group list-group-flush" id="notif">
+                  </div>
+                  <!-- View all -->
+                  <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-1">Voir le tout</a>
+                </div>
+            </div>
+          </li>
+          {% endif %}
+        </ul>
+        {% if request.user.is_authenticated %}
+        <ul class="navbar-nav align-items-center  ml-auto ml-md-0 ">
+          <li class="nav-item dropdown">
+            <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <div class="media align-items-center">
+                <span class="avatar avatar-sm rounded-circle">
+                  <img alt="Image placeholder" src="{% static 'images/team-4.jpg' %}">
+                </span>
+                <div class="media-body  ml-2  d-none d-lg-block">
+                  <span class="mb-0 text-sm  font-weight-bold" style="color:rgba(179, 179, 179, 0.808); ">Bienvenue {{request.user.last_name}} {{request.user.first_name}}</span>
+                </div>
+              </div>
+            </a>
+            <div class="dropdown-menu  dropdown-menu-right ">
+              <div class="dropdown-header noti-title">
+                <h6 class="text-overflow m-0">Bienvenue!</h6>
+              </div>
+              {% if request.user|has_group:"Administrateur" %}
+                <a href="/admin/auth/user/{{ request.user.id }}/change/" class="dropdown-item">
+                  <i class="ni ni-single-02"></i>
+                  <span>Mon profile</span>
+                </a>
+              {% endif %}
+              {% if request.user|has_group:"Agent" or request.user|has_group:"Adjoint"  %}
+                <a href="{% url 'disponibilites:edit_agent' %}" class="dropdown-item">
+                  <i class="ni ni-single-02"></i>
+                  <span>Mon profile</span>
+                </a>
+              {% endif %}
+              
+              <a href="#!" class="dropdown-item">
+                <i class="ni ni-calendar-grid-58"></i>
+                <span>Statistiques</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="{% url 'disponibilites:logout' %}" class="dropdown-item">
+                <i class="ni ni-user-run"></i>
+                <span>Déconnexion</span>
+              </a>
+            </div>
+          </li>
+        </ul>
+        {% else %}
+          <a class="btn btn-sm btn-primary" href="{% url 'disponibilites:login' %}">Connexion</a>
+          <a class="btn btn-sm btn-primary" href="{% url 'rdv:nouveau' %}">Rendez-vous</a>
+          <a class="btn btn-sm btn-primary" href="{% url 'administre:login' %}">Mes Rendez-vous</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+
+
+
+<div class="row">
+
+</div>
+<!--<nav class="navbar navbar-light bg-light">
+    <div class="wrapper">
+        <a href="{% url 'index' %}" class="navbar-brand"><img src="{% static 'images/logo2.png' %}" class="img-fluid d-inline-block align-top" width="150" height="170" alt="logo"></a>
+        <ul class="navbar-right">
+            <ul class="navbar-right">
+                {% if request.user.is_authenticated %}
+                    <li><p style="color: #1ce;"> <strong>Salut Mr/Mm  {{ request.user.last_name }}</strong></p></li> 
+                {% endif %}
+                <li><a href="{% url 'index' %}">Accueil</a></li> 
+                <li><a href="{% url 'rdv:nouveau' %}">Rendez-vous</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'disponibilites:dashboard' %}">Listes des RDV</a></li>
+                    <li><a href="{% url 'disponibilites:logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'disponibilites:login' %}">Login</a></li>
+                {% endif %}
+            </ul> 
+        </ul> 
+    </div>
+</nav>-->

@@ -1,0 +1,68 @@
+{% extends 'administration/layouts/base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block content %}
+<div class="tile is-child is-8">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="notification is-danger" role="alert">
+                {{message}}
+            </div>
+        {% endif %} 
+        {% if message.tags == 'success' %}
+            <div class="notification is-success" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+    {% endfor %}
+    <h2 class="title" style="color: #112A46;font-weight: 700;">Prendre un congé </h2>
+
+    <form method="POST" action="{% url 'administration:conges_add_go' %}">
+        {% csrf_token %}
+        <div class="columns">
+            <div class="column is-4">
+                <label>Intitulé <span style="color: red;">*</span>  </label>
+            </div>
+            {{form.name}}
+        </div>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Date de début <span style="color: red;">*</span>  </label>
+            </div>
+            {{form.date_d}}
+        </div>
+        {% if request.user|has_group:"Administrateur" or request.user|has_group:"Adjoint" or request.user|has_group:"Superviseur" %}
+        <div class="columns">
+            <div class="column is-4">
+                <label>Agent<span style="color: red;">*</span> </label>
+            </div>
+            {{form.responsable}}
+        </div>
+        {% endif %}
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Date de fin <span style="color: red;">*</span>  </label>
+            </div>
+            {{form.date_f}}
+        </div>
+        <br>
+
+        <div class="columns">
+            <div class="column is-4">
+                <label>Description</label>
+            </div>
+            {{form.description}}
+        </div>
+        <div class="columns">
+            <div class="column ">
+                <button id="save" class="is-primary button is-small" type="submit"><span><i class="fas fa-plus"></i></span></button>
+            </div>
+            <div class="column">
+                <a href="{% url 'administration:conges' %}" class=" is-danger button is-small">Annuler</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'administration/layouts/base.html' %}
+{% load user_tags %}
+{% block content %}
+
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="notification is-danger" role="alert">
+    {{message}}
+</div>
+{% endif %}
+{% if message.tags == 'success' %}
+<div class="notification is-success" role="alert">
+    {{message}}
+</div>
+{% endif %}
+{% endfor %}
+
+<div class="section-stats" style="margin-bottom: 15px;">
+    <div class="card">
+        <p><a href="{% url 'administration:get_in_excel_go' %}">Exporter les Rendez-vous</a></p>
+    </div>
+    <div class="card">
+        <p> <a href="#">Importer des rendez-vous</a></p>
+        <form action="{% url 'administration:bring_in_excel' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="fichier" required class="input is-small" id="">
+            <button type="submit" class="is-primary button is-small">Importer</button>
+        </form>
+    </div>
+    <div class="card">
+        <p> <a href="{% url 'administration:upload_model' %}">Télécharger un modèle d'importation</a></p>
+    </div>
+</div>
+<div class="box">
+    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <form action="" class="searh-contianer">
+            <div class=" w-">
+                <input id="debut" class="input is-small" type="date">
+            </div>
+            <div class=" w-">
+                <input id="fin" class="input is-small" type="date">
+            </div>
+            <div class=" w- ">
+                <a class=" button is-primary is-small" id="go">Rechercher</a>
+            </div>
+            <div class=" w- ">
+                <a class=" button is-primary is-small" id="goExport">Exporter</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-container" style="overflow: scroll;width: inherit; position: relative;">
+        <table class="table" style="overflow: scroll;min-width: 600px;">
+            <thead>
+                <tr>
+                    <th>ADMINISTRES</th>
+                    <th>ADDRESS ELECTRONIC</th>
+                    <th>SERVICE</th>
+                    <th>DATE</th>
+                </tr>
+            </thead>
+
+            <tbody id="contentTableResponsable1">
+                {% for rdv in rdvs %}
+                <tr>
+                    <td>{{ rdv.client.nom }} {{ rdv.client.prenom }}</td>
+                    <td>{{ rdv.client.email }}</td>
+                    <td>{{ rdv.service.nom }}</td>
+                    <td>{{ rdv.date_r| date:'d/m/Y' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $('#go').click(function () {
+        url = "{% url 'administration:get_rdv_ajax_form_date' %}"
+        findRdvBydateAdmin(url)
+    })
+    $('#goExport').click(function () {
+        url = "{% url 'administration:get_in_excel_go' %}"
+        ExportAjax(url)
+    })
+</script>
+{% endblock %}
